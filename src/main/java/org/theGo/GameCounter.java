@@ -1,4 +1,4 @@
-package org.example;
+package org.theGo;
 
 public class GameCounter {
    private int blackStones = 0;

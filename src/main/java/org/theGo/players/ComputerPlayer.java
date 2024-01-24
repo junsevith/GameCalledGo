@@ -1,20 +1,21 @@
-package org.example;
+package org.theGo.players;
 
-import java.io.IOException;
+import org.theGo.Color;
+import org.theGo.GoBoard;
 
 public class ComputerPlayer extends GoPlayer {
-   ComputerPlayer(Color color) {
+   public ComputerPlayer(Color color) {
       super(color);
    }
 
 
    @Override
-   String takeTurn(GoBoard board) throws IOException {
+   public String takeTurn(GoBoard board) {
       return color + " pas computer";
    }
 
    @Override
-   String getName() {
+   public String getName() {
       if (super.color == Color.BLACK) {
          return "komputer grający czarnymi";
       } else {
@@ -23,7 +24,12 @@ public class ComputerPlayer extends GoPlayer {
    }
 
    @Override
-   boolean askFinish() {
+   public boolean askFinish() {
       return true;
+   }
+
+   @Override
+   public void message(String message) {
+
    }
 }

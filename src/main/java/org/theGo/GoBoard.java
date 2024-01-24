@@ -1,4 +1,4 @@
-package org.example;
+package org.theGo;
 
 import java.util.HashSet;
 import java.util.Set;
