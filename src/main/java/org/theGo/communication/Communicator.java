@@ -33,6 +33,7 @@ public abstract class Communicator {
      *
      * @param question      the question to ask
      * @param map           map of possible answers and corresponding values
+     * @param options       list of possible answers (for displaying purposes)
      * @param defaultChoice the default choice (null if there is no default choice)
      * @return the answer
      */
@@ -70,9 +71,25 @@ public abstract class Communicator {
      */
     public abstract void deny(String message);
 
+    /**
+     * Displays some text.
+     *
+     * @param message the message to display
+     */
     public abstract void display(String message);
 
+    /**
+     * Displays the board.
+     *
+     * @param board the board to display
+     */
     public abstract void displayBoard(GoBoard board);
 
+    /**
+     * Displays the score.
+     *
+     * @param blackPoints the number of black points
+     * @param whitePoints the number of white points
+     */
     public abstract void displayScore(int blackPoints, int whitePoints);
 }

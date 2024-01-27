@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test;
-import org.theGo.app.GoSetup;
+import org.theGo.app.GoInit;
 import org.theGo.communication.TermComm;
 
 import java.io.ByteArrayInputStream;
@@ -9,6 +9,7 @@ public class GoGameTest {
     @Test
     public void killTest(){
         String ring = """
+
 
 
 
@@ -43,13 +44,14 @@ public class GoGameTest {
             t
             """;
         InputStream in = new ByteArrayInputStream(ring.getBytes());
-        new GoSetup(new TermComm(in, System.out));
+        new GoInit(new TermComm(in, System.out)).start();
     }
 
     @Test
     public void koTest() {
         String ko = """
                             
+                     
                      
                             
                 1 2
@@ -72,6 +74,6 @@ public class GoGameTest {
                 t
                 """;
         InputStream in = new ByteArrayInputStream(ko.getBytes());
-        new GoSetup(new TermComm(in, System.out));
+        new GoInit(new TermComm(in, System.out)).start();
     }
 }

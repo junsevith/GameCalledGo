@@ -17,11 +17,17 @@ public class Database {
         return instance;
     }
 
-    public ResultSet query(String query) throws SQLException {
+    public ResultSet get(String query) throws SQLException {
         if (connection != null && !connection.isClosed()) {
             return connection.createStatement().executeQuery(query);
         } else {
             return null;
+        }
+    }
+
+    public void insert(String query) throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            connection.createStatement().executeUpdate(query);
         }
     }
 }

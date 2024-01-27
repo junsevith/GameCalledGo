@@ -40,4 +40,12 @@ public class Move {
     public Color getColor() {
         return color;
     }
+
+    public String toString() {
+        String output = color.name() + " " + type.name();
+        if (x != -1 && y != -1){
+             output += " " + x + " " + y;
+        }
+        return output;
+    }
 }

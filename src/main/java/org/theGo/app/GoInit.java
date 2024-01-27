@@ -35,6 +35,12 @@ public class GoInit extends AppMode {
     }
 
     private AppMode loadApp(Communicator communicator) {
-        return new GoLoad(communicator);
+        AppMode mode;
+        try {
+            mode = new GoLoad(communicator);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while loading games");
+        }
+        return mode;
     }
 }

@@ -6,6 +6,7 @@ import org.theGo.game.Move;
 
 public abstract class GoPlayer {
     final Color color;
+    String nickname;
 
     public GoPlayer(Color color) {
         this.color = color;
@@ -23,4 +24,7 @@ public abstract class GoPlayer {
         return color;
     }
 
+    public String getNickname() {
+    	return nickname;
+    }
 }

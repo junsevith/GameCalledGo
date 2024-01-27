@@ -5,8 +5,10 @@ import org.theGo.game.GoBoard;
 import org.theGo.game.Move;
 
 public class ComputerPlayer extends GoPlayer {
+
    public ComputerPlayer(Color color) {
       super(color);
+      nickname = "komputer_v0.1";
    }
 
 

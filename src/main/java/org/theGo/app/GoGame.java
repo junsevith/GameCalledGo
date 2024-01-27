@@ -1,6 +1,8 @@
 package org.theGo.app;
 
 import org.theGo.database.BoardFactory;
+import org.theGo.database.Database;
+import org.theGo.database.DatabaseHandler;
 import org.theGo.game.Color;
 import org.theGo.database.GameRecorder;
 import org.theGo.game.GoBoard;
@@ -8,6 +10,7 @@ import org.theGo.communication.Communicator;
 import org.theGo.game.Move;
 import org.theGo.players.GoPlayer;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 public class GoGame {
@@ -98,12 +101,46 @@ public class GoGame {
         int whitePoints = board.getCounter().getBlackKilled() + board.countTerritory(Color.WHITE);
         broadcast.message("Punkty czarnego: " + blackPoints);
         broadcast.message("Punkty białego: " + whitePoints);
+        Color winner;
         if (blackPoints > whitePoints) {
             broadcast.message("Wygrał czarny!");
+            winner = black.getColor();
         } else if (whitePoints > blackPoints) {
             broadcast.message("Wygrał biały!");
+            winner = white.getColor();
         } else {
             broadcast.message("Remis!");
+            winner = null;
+        }
+        saveGame(winner);
+    }
+
+    private void saveGame(Color winner) {
+        try {
+            DatabaseHandler databaseHandler = new DatabaseHandler(Database.getInstance());
+
+            String blackNick = black.getNickname();
+            if (blackNick.isEmpty()) {
+                blackNick = "player1";
+            }
+            String whiteNick = white.getNickname();
+            if (whiteNick.isEmpty()) {
+                whiteNick = "player2";
+            }
+
+            String winnerNick;
+            if (winner == Color.BLACK) {
+                winnerNick = blackNick;
+            } else if (winner == Color.WHITE) {
+                winnerNick = whiteNick;
+            } else {
+                winnerNick = "remis";
+            }
+
+            databaseHandler.saveGame(blackNick, whiteNick, winnerNick, board.getSize(), recorder.getMoves());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+//            broadcast.message("Problem z nawiązaniem kontaktu z bazą danych, nie udało się zapisać gry");
         }
     }
 }
