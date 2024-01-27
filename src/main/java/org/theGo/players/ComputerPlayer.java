@@ -1,7 +1,8 @@
 package org.theGo.players;
 
-import org.theGo.Color;
-import org.theGo.GoBoard;
+import org.theGo.game.Color;
+import org.theGo.game.GoBoard;
+import org.theGo.game.Move;
 
 public class ComputerPlayer extends GoPlayer {
    public ComputerPlayer(Color color) {
@@ -10,8 +11,8 @@ public class ComputerPlayer extends GoPlayer {
 
 
    @Override
-   public String takeTurn(GoBoard board) {
-      return color + " pas computer";
+   public Move takeTurn(GoBoard board) {
+      return new Move(super.color, Move.Type.PASS);
    }
 
    @Override

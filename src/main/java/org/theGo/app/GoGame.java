@@ -1,6 +1,11 @@
-package org.theGo;
+package org.theGo.app;
 
+import org.theGo.database.BoardFactory;
+import org.theGo.game.Color;
+import org.theGo.database.GameRecorder;
+import org.theGo.game.GoBoard;
 import org.theGo.communication.Communicator;
+import org.theGo.game.Move;
 import org.theGo.players.GoPlayer;
 
 import java.util.Arrays;
@@ -31,7 +36,6 @@ public class GoGame {
      * Rozpoczyna grę
      */
     public void startGame() {
-        broadcast.message("Witaj w grze GO!");
         beginGame();
         countPoints();
     }
@@ -43,24 +47,29 @@ public class GoGame {
     private void beginGame() {
         broadcast.message("Zaczynamy grę!");
         GoPlayer activePlayer = black;
+
         while (gameIsNotOver()) {
-            broadcast.message("\033[H\033[2J");
-            broadcast.message(board.printBoard());
-            broadcast.message("Punkty czarnego: " + board.getCounter().getWhiteKilled());
-            broadcast.message("Punkty białego: " + board.getCounter().getBlackKilled());
+            broadcast.displayBoard(board);
+            broadcast.displayScore(board.getCounter().getBlackKilled(), board.getCounter().getWhiteKilled());
             broadcast.message("Teraz ruch wykonuje " + activePlayer.getName());
 
+            Move move;
             while (true) {
-                String move = activePlayer.takeTurn(board);
+                move = activePlayer.takeTurn(board);
 
-                if (!move.split(" ")[1].equals("pas") && Arrays.deepEquals(board.getState(), recorder.getState(-2))) {
+                if (!move.isType(Move.Type.PASS) && Arrays.deepEquals(board.getState(), recorder.getState(-2))) {
                     activePlayer.message("Nie można wykonać ruchu ko");
-                    board = GoBoard.generateBoard(board.getSize(), recorder.getMoveHistory());
+                    board = BoardFactory.recreate(board.getSize(), recorder.getMoves());
                 } else {
                     recorder.recordMove(move);
                     recorder.recordBoardState(board.getState());
                     break;
                 }
+            }
+
+            if (move.isType(Move.Type.RESIGN)) {
+                broadcast.message("Gracz " + activePlayer.getName() + " poddał grę");
+                break;
             }
 
             if (activePlayer == black) {

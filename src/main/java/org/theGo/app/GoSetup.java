@@ -1,28 +1,29 @@
-package org.theGo;
+package org.theGo.app;
 
+import org.theGo.game.Color;
 import org.theGo.communication.Communicator;
 import org.theGo.players.ComputerPlayer;
 import org.theGo.players.GoPlayer;
 import org.theGo.players.HumanPlayer;
 
+import java.util.Arrays;
 import java.util.Map;
 
-public class GoInit {
-    Communicator comm;
+public class GoSetup extends AppMode {
     GoPlayer player1;
     GoPlayer player2;
 
     int size = 0;
 
-    public GoInit(Communicator communicator) {
-        comm = communicator;
-        setPlayers();
+    public GoSetup(Communicator communicator) {
+        super(communicator);
     }
+
 
     /**
      * Ustawia graczy oraz komputery
      */
-    private void setPlayers() {
+    public void start() {
         Map<String, Color> colorMap = Map.of(
                 "b", Color.BLACK,
                 "c", Color.WHITE,
@@ -32,7 +33,7 @@ public class GoInit {
                 "white", Color.WHITE);
 
         if (comm.confirm("Czy chcesz grać z komputerem?", false)) {
-            Color color = comm.choose("Wybierz kolor:", colorMap, null);
+            Color color = comm.choose("Wybierz kolor:", colorMap, Arrays.asList("biały", "czarny"), null);
             player1 = new HumanPlayer(color, comm);
             player2 = new ComputerPlayer(color.opposite());
             setSize();

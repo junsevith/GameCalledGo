@@ -1,7 +1,8 @@
 package org.theGo.players;
 
-import org.theGo.Color;
-import org.theGo.GoBoard;
+import org.theGo.game.Color;
+import org.theGo.game.GoBoard;
+import org.theGo.game.Move;
 import org.theGo.communication.Communicator;
 
 public class HumanPlayer extends GoPlayer {
@@ -13,15 +14,15 @@ public class HumanPlayer extends GoPlayer {
    }
 
    @Override
-   public String takeTurn(GoBoard board) {
-      String output = "";
-      while (output.isEmpty()){
+   public Move takeTurn(GoBoard board) {
+      Move output = null;
+      while (output == null){
          try {
             String line = comm.ask("Podaj współrzędne ruchu:");
             String[] args = line.split(" ");
 
             if (line.strip().equals("pas")){
-               output = color + " pas";
+               output = new Move(super.color, Move.Type.PASS);
                continue;
             }
 
@@ -32,10 +33,10 @@ public class HumanPlayer extends GoPlayer {
                throw new IllegalArgumentException();
             }
 
-            if (!board.placeStone(x - 1, y - 1, super.color)){
+            if (!board.placeStone(x, y, super.color)){
                throw new IllegalArgumentException();
             } else {
-               output = color + " " + x + " " + y;
+               output = new Move(super.color, Move.Type.MOVE, x, y);
             }
 
          } catch (NumberFormatException e) {

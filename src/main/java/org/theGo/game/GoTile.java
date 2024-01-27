@@ -1,4 +1,4 @@
-package org.theGo;
+package org.theGo.game;
 
 import java.util.*;
 
@@ -170,9 +170,11 @@ public class GoTile {
       checkNeighborsV3();
    }
 
+
    /**
     * Sprawdza sąsiadów i aktualizuje oddechy oraz zależności
     */
+   @Deprecated
    private void checkNeighborsV2() {
       //zabiera oddechy wszystkim sąsiadom przeciwnego koloru
       for (Integer direction : getNeighbors(stoneColor.opposite())) {

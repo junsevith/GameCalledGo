@@ -1,7 +1,8 @@
 package org.theGo.players;
 
-import org.theGo.Color;
-import org.theGo.GoBoard;
+import org.theGo.game.Color;
+import org.theGo.game.GoBoard;
+import org.theGo.game.Move;
 
 public abstract class GoPlayer {
     final Color color;
@@ -10,7 +11,7 @@ public abstract class GoPlayer {
         this.color = color;
     }
 
-    public abstract String takeTurn(GoBoard board);
+    public abstract Move takeTurn(GoBoard board);
 
     public abstract String getName();
 

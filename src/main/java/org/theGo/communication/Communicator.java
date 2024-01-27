@@ -1,5 +1,8 @@
 package org.theGo.communication;
 
+import org.theGo.game.GoBoard;
+
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -33,7 +36,7 @@ public abstract class Communicator {
      * @param defaultChoice the default choice (null if there is no default choice)
      * @return the answer
      */
-    public abstract <T> T choose(String question, Map<String, T> map, T defaultChoice);
+    public abstract <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice);
 
     /**
      * Asks to set a value and returns parsed value.
@@ -67,4 +70,9 @@ public abstract class Communicator {
      */
     public abstract void deny(String message);
 
+    public abstract void display(String message);
+
+    public abstract void displayBoard(GoBoard board);
+
+    public abstract void displayScore(int blackPoints, int whitePoints);
 }

@@ -1,9 +1,12 @@
-package org.theGo;
+package org.theGo.database;
+
+import org.theGo.game.Color;
+import org.theGo.game.Move;
 
 import java.util.ArrayList;
 
 public class GameRecorder {
-   private final ArrayList<String> moves = new ArrayList<>();
+   private final ArrayList<Move> moves = new ArrayList<>();
 
    private final ArrayList<Color[][]> boardStates = new ArrayList<>();
 
@@ -11,7 +14,7 @@ public class GameRecorder {
       boardStates.add(boardState);
    }
 
-   public void recordMove(String move) {
+   public void recordMove(Move move) {
       moves.add(move);
    }
 
@@ -19,19 +22,14 @@ public class GameRecorder {
       if (moves.size() < 2) {
          return false;
       } else {
-         String lastMove = moves.getLast().split(" ")[1].strip();
-         String secondLastMove = moves.get(moves.size() - 2).split(" ")[1].strip();
-         return lastMove.equals("pas") && secondLastMove.equals("pas");
+         Move lastMove = moves.getLast();
+         Move secondLastMove = moves.get(moves.size() - 2);
+         return lastMove.isType(Move.Type.PASS) && secondLastMove.isType(Move.Type.PASS);
       }
    }
 
-   public String getMoveHistory() {
-      StringBuilder sb = new StringBuilder();
-      for (String move : moves) {
-         sb.append(move);
-         sb.append("\n");
-      }
-      return sb.toString();
+   public ArrayList<Move> getMoves() {
+      return moves;
    }
 
    public Color[][] getState(int i){
