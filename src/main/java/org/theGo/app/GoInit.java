@@ -23,9 +23,10 @@ public class GoInit extends AppMode {
 
     public GoInit(Communicator communicator) {
         super(communicator);
+        start();
     }
 
-    @Override
+
     public void start() {
         comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("graj", "wczytaj"), 0).apply(comm).start();
     }
@@ -39,8 +40,8 @@ public class GoInit extends AppMode {
         try {
             mode = new GoLoad(communicator);
         } catch (Exception e) {
-
-            throw new RuntimeException(e);
+            comm.error("Problem z dostępem do bazy danych, wracam do wyboru trybu gry");
+            mode = this;
         }
         return mode;
     }

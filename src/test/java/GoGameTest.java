@@ -43,7 +43,7 @@ public class GoGameTest {
                 test2
                 """;
         InputStream in = new ByteArrayInputStream(ring.getBytes());
-        new GoInit(new TermComm(in, System.out)).start();
+        new GoInit(new TermComm(in, System.out, System.err));
     }
 
     @Test
@@ -72,6 +72,6 @@ public class GoGameTest {
                 test2
                     """;
         InputStream in = new ByteArrayInputStream(ko.getBytes());
-        new GoInit(new TermComm(in, System.out)).start();
+        new GoInit(new TermComm(in, System.out, System.err));
     }
 }

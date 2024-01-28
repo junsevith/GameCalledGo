@@ -15,44 +15,25 @@ public class HumanPlayer extends GoPlayer {
 
     @Override
     public Move takeTurn(GoBoard board) {
-        Move output = null;
-        while (output == null) {
-            try {
-                String line = comm.ask("Podaj współrzędne ruchu:");
-                String[] args = line.split(" ");
+        while (true) {
+            Move output = comm.takeMove("Podaj współrzędne ruchu:", super.color);
+            int x = output.getX();
+            int y = output.getY();
 
-                if (line.strip().equals("pas")) {
-                    output = new Move(super.color, Move.Type.PASS);
-                    continue;
-                }
-
-                if (line.strip().equals("resign")) {
-                    output = new Move(super.color, Move.Type.RESIGN);
-                    continue;
-                }
-
-                int x = Integer.parseInt(args[0]);
-                int y = Integer.parseInt(args[1]);
-
-                if (x < 1 || x > board.getSize() || y < 1 || y > board.getSize()) {
-                    throw new IllegalArgumentException();
-                }
-
-                if (!board.placeStone(x, y, super.color)) {
-                    throw new IllegalArgumentException();
-                } else {
-                    output = new Move(super.color, Move.Type.MOVE, x, y);
-                }
-
-            } catch (NumberFormatException e) {
-                comm.deny("Niepoprawne współrzędne");
-            } catch (IllegalArgumentException e) {
-                comm.deny("Nie można ustawić kamienia na tym polu");
-            } catch (Exception e) {
-                comm.deny("Niepoprawny format danych");
+            if (x < 1 || x > board.getSize() || y < 1 || y > board.getSize()) {
+                comm.error("Wybrano pole poza wymiarami planszy");
+                continue;
             }
+
+            if (!board.placeStone(x, y, super.color)) {
+                comm.error("Wybrano pole poza wymiarami planszy");
+                continue;
+            } else {
+                output = new Move(super.color, Move.Type.MOVE, x, y);
+            }
+            return output;
         }
-        return output;
+
     }
 
     @Override
@@ -82,7 +63,7 @@ public class HumanPlayer extends GoPlayer {
 
     @Override
     public String getNickname() {
-    	if (nickname == null) {
+        if (nickname == null) {
             nickname = comm.ask(getName() + ", wpisz swój nick (pozwoli on ci na znalezienie zapisu gry w bazie danych):");
         }
         return nickname;

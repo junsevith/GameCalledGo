@@ -1,6 +1,8 @@
 package org.theGo.communication;
 
+import org.theGo.game.Color;
 import org.theGo.game.GoBoard;
+import org.theGo.game.Move;
 
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,11 @@ public class Broadcast extends Communicator{
     }
 
     @Override
+    public Move takeMove(String question, Color color) {
+        throw new UnsupportedOperationException("Can't ask a question to many communicators");
+    }
+
+    @Override
     public void message(String message) {
         communicators.forEach(c -> c.message(message));
     }
@@ -48,7 +55,7 @@ public class Broadcast extends Communicator{
     }
 
     @Override
-    public void deny(String message) {
+    public void error(String message) {
 
     }
 

@@ -2,6 +2,7 @@ package org.theGo.communication;
 
 import org.theGo.game.Color;
 import org.theGo.game.GoBoard;
+import org.theGo.game.Move;
 
 import java.io.*;
 import java.util.*;
@@ -11,12 +12,16 @@ public class TermComm extends Communicator {
 
     private final BufferedReader in;
     private final PrintWriter out;
+    private final PrintStream err;
 
-    private final String answer_wrong = "The answer could not be understood.\n";
+    private final String answerNotRecognized = "Nie rozpoznano odpowiedzi";
+    private final String optionString = "wpisz o żeby zobaczyć dostępne opcje";
+    private final String defaultString = "domyślnie:";
 
-    public TermComm(InputStream in, OutputStream out) {
+    public TermComm(InputStream in, OutputStream out, OutputStream err) {
         this.in = new BufferedReader(new InputStreamReader(in));
         this.out = new PrintWriter(out, true);
+        this.err = new PrintStream(err, true);
     }
 
     @Override
@@ -40,8 +45,8 @@ public class TermComm extends Communicator {
     }
 
     @Override
-    public void deny(String message) {
-        message(message);
+    public void error(String message) {
+        err.println(message);
     }
 
     @Override
@@ -92,7 +97,7 @@ public class TermComm extends Communicator {
     public boolean confirm(String question, Boolean defaultChoice) {
         String answer;
         if (defaultChoice != null) {
-            answer = ask(question + " (default: " + (defaultChoice ? "yes" : "no") + ")");
+            answer = ask(question + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
             if (defaultSet.contains(answer.toLowerCase())) {
                 return defaultChoice;
             }
@@ -104,7 +109,8 @@ public class TermComm extends Communicator {
         } else if (denials.contains(answer.toLowerCase())) {
             return false;
         } else {
-            return confirm(answer_wrong + question, defaultChoice);
+            error(answerNotRecognized);
+            return confirm(question, defaultChoice);
         }
     }
 
@@ -113,7 +119,7 @@ public class TermComm extends Communicator {
     public <T> T set(String question, Function<String, T> parser, T defaultValue) {
         String answer;
         if (defaultValue != null) {
-            answer = ask(question + " (default: " + defaultValue + ")");
+            answer = ask(question + " (" + defaultString + " " + defaultValue + ")");
             if (defaultSet.contains(answer.toLowerCase())) {
                 return defaultValue;
             }
@@ -124,15 +130,39 @@ public class TermComm extends Communicator {
         try {
             return parser.apply(answer);
         } catch (Exception e) {
-            return set(answer_wrong + question, parser, defaultValue);
+            error(answerNotRecognized);
+            return set(question, parser, defaultValue);
         }
     }
 
     @Override
-    public <T> T choose(String question, Map<String, T> map,  List<String> options, Integer defaultChoice) {
+    public Move takeMove(String question, Color color) {
+        try {
+            Move output;
+            String line = ask("Podaj współrzędne ruchu:");
+            String[] args = line.split(" ");
+
+            if (line.strip().equals("pas")) {
+                output = new Move(color, Move.Type.PASS);
+            } else if (line.strip().equals("resign")) {
+                output = new Move(color, Move.Type.RESIGN);
+            } else {
+                int x = Integer.parseInt(args[0]);
+                int y = Integer.parseInt(args[1]);
+                output = new Move(color, Move.Type.MOVE, x, y);
+            }
+            return output;
+        } catch (Exception e) {
+            error(answerNotRecognized);
+            return takeMove(question, color);
+        }
+    }
+
+    @Override
+    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice) {
         String answer;
         if (defaultChoice != null) {
-            answer = ask(question + " (default: " + options.get(defaultChoice) + ", type o to see options)");
+            answer = ask(question + " (" + defaultString + " " + options.get(defaultChoice) + ", " + optionString + ")");
             if (defaultSet.contains(answer.toLowerCase())) {
                 return map.get(options.get(defaultChoice));
             }
@@ -143,12 +173,13 @@ public class TermComm extends Communicator {
         if (answer.equals("o")) {
             out.println("Options:");
             message(options.toString());
-            return choose( question, map, options, defaultChoice);
+            return choose(question, map, options, defaultChoice);
         }
 
         T parsed = map.get(answer);
         if (parsed == null) {
-            return choose(answer_wrong + question, map, options, defaultChoice);
+            error("Nie rozpoznano odpowiedzi");
+            return choose(question, map, options, defaultChoice);
         } else {
             return parsed;
         }

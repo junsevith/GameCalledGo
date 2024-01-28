@@ -51,13 +51,13 @@ public class GoLoad extends AppMode {
         clearFilter();
     }
 
+    private boolean cont = true;
+
     @Override
     public void start() {
-        while (true) {
+        while (cont) {
             comm.choose("Podaj komendę: (h - pomoc)", commandSet, commands, 0).run();
-
         }
-
     }
 
     private void help() {
@@ -74,7 +74,7 @@ public class GoLoad extends AppMode {
     }
 
     private void exit() {
-        System.exit(0);
+        cont = false;
     }
 
     private void refresh() {
@@ -112,7 +112,7 @@ public class GoLoad extends AppMode {
             moves.removeFirst();
             new GoReplay(comm, moves, size);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            comm.error("Błąd podczas wczytywania gry");
         }
     }
 

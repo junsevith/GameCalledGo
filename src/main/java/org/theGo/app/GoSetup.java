@@ -56,7 +56,7 @@ public class GoSetup extends AppMode {
             if (5 <= size && size <= 19) {
                 break;
             }
-            comm.deny("Rozmiar planszy musi być z przedziału [5, 19]");
+            comm.error("Rozmiar planszy musi być z przedziału [5, 19]");
         }
         comm.accept("Plansza ustawiona");
     }

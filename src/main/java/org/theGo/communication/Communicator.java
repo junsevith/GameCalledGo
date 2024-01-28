@@ -1,6 +1,8 @@
 package org.theGo.communication;
 
+import org.theGo.game.Color;
 import org.theGo.game.GoBoard;
+import org.theGo.game.Move;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +12,7 @@ public abstract class Communicator {
 
 
     /**
-     * Asks a question and returns the answer.
+     * Asks a question and returns the answer. Used for getting a string value.
      *
      * @param question the question to ask
      * @return the answer
@@ -42,6 +44,7 @@ public abstract class Communicator {
     /**
      * Asks to set a value and returns parsed value.
      * If the answer is not recognized, the question is repeated.
+     * Used for getting a value of a specific type (e.g. integer).
      *
      * @param question      the question to ask
      * @param parser        function to parse the answer
@@ -49,6 +52,8 @@ public abstract class Communicator {
      * @return value parsed from the answer
      */
     public abstract <T> T set(String question, Function<String, T> parser, T defaultChoice);
+
+    public abstract Move takeMove(String question, Color color);
 
     /**
      * Prints a message.
@@ -69,7 +74,7 @@ public abstract class Communicator {
      *
      * @param message the message to print
      */
-    public abstract void deny(String message);
+    public abstract void error(String message);
 
     /**
      * Displays some text.
