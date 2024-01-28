@@ -61,10 +61,15 @@ public class DatabaseHandler {
         return new Move(color, type, x, y);
     }
 
-    public String browseGames(int page) throws SQLException {
-        String query = "SELECT * FROM `games` ORDER BY `date` DESC LIMIT " + (page - 1) * 10 + ", 10";
-        ResultSet rs = db.get(query);
+    public String browseGames(String query) throws SQLException {
+        return displayGames(db.get(query));
+    }
+
+
+
+    private String displayGames(ResultSet rs) throws SQLException {
         StringBuilder sb = new StringBuilder();
+        sb.append("id black white winner boardSize date\n");
         while (rs.next()) {
             sb.append(rs.getInt("id"));
             sb.append(" ");
