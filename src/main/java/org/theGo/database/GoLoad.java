@@ -2,107 +2,124 @@ package org.theGo.database;
 
 import org.theGo.app.AppMode;
 import org.theGo.communication.Communicator;
+import org.theGo.game.Move;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
+import java.util.*;
 
 public class GoLoad extends AppMode {
     private final DatabaseHandler dbHandler;
-
     private int page = 1;
-
-    private String result;
 
     private Filter filter;
 
-    Map<String, Consumer<String>> commands = new HashMap<>();
+    private final List<String> commands = Arrays.asList(
+            "help",
+            "prev",
+            "next",
+            "load",
+            "refresh",
+            "user",
+            "clear",
+            "exit"
+    );
+
+    Map<String, Runnable> commandSet = new HashMap<>();
 
     public GoLoad(Communicator comm) throws SQLException {
         super(comm);
 
-        commands.put("h", this::help);
-        commands.put("help", this::help);
-        commands.put("p", this::prevPage);
-        commands.put("prev", this::prevPage);
-        commands.put("n", this::nextPage);
-        commands.put("next", this::nextPage);
-        commands.put("l", this::replayGame);
-        commands.put("load", this::replayGame);
-        commands.put("r", this::refresh);
-        commands.put("refresh", this::refresh);
-        commands.put("u", this::filterUser);
-        commands.put("user", this::filterUser);
-        commands.put("c", this::clearFilter);
-        commands.put("clear", this::clearFilter);
+        commandSet.put("h", this::help);
+        commandSet.put("help", this::help);
+        commandSet.put("p", this::prevPage);
+        commandSet.put("prev", this::prevPage);
+        commandSet.put("n", this::nextPage);
+        commandSet.put("next", this::nextPage);
+        commandSet.put("l", this::replayGame);
+        commandSet.put("load", this::replayGame);
+        commandSet.put("r", this::refresh);
+        commandSet.put("refresh", this::refresh);
+        commandSet.put("u", this::filterUser);
+        commandSet.put("user", this::filterUser);
+        commandSet.put("c", this::clearFilter);
+        commandSet.put("clear", this::clearFilter);
+        commandSet.put("e", this::exit);
+        commandSet.put("exit", this::exit);
 
 
         dbHandler = new DatabaseHandler(Database.getInstance());
-        clearFilter("");
-        refresh("");
+        clearFilter();
     }
 
     @Override
     public void start() {
         while (true) {
-            comm.display(result);
-            String command = comm.ask("Podaj komendę: (h - pomoc)");
-            if (command.equals("exit")) break;
-            String[] args = command.split(" ");
-            commands.get(args[0]).accept(args.length > 1 ? args[1] : "");
+            comm.choose("Podaj komendę: (h - pomoc)", commandSet, commands, 0).run();
+
         }
 
     }
 
-    private void help(String s) {
+    private void help() {
         comm.display("""
                 h,help - wyświetl pomoc
                 p,prev - poprzednia strona
                 n,next - następna strona
                 l,load - wczytaj powtórkę gry
                 r,refresh - odśwież wyniki
-                exit - wyjdź z przeglądania gier
+                u,user - filtruj po użytkowniku
+                c,clear - wyczyść filtr
+                e,exit - wyjdź z przeglądania gier
                 """);
     }
 
-    private void refresh(String s) {
+    private void exit() {
+        System.exit(0);
+    }
+
+    private void refresh() {
 //        comm.message(filter.getQuery(page));
+        String result;
         try {
             result = dbHandler.browseGames(filter.getQuery(page));
         } catch (SQLException e) {
 //            throw new RuntimeException(e);
             result = "Błąd podczas wczytywania gier";
         }
+        comm.display(result);
     }
 
-    private void nextPage(String s) {
+    private void nextPage() {
         page++;
-        refresh(s);
+        refresh();
     }
 
-    private void prevPage(String s) {
+    private void prevPage() {
         page--;
-        refresh(s);
+        refresh();
     }
 
-    private void clearFilter(String s) {
+    private void clearFilter() {
         filter = new Filter.Clear();
-        refresh(s);
+        refresh();
     }
 
-    private void replayGame(String s) {
-        int id = Integer.parseInt(s);
+    private void replayGame() {
+        int id  = comm.set("Podaj id gry: ", Integer::parseInt, null);
         try {
-            new GoReplay(comm, dbHandler.getMoves(id)).start();
+            ArrayList<Move> moves = dbHandler.getMoves(id);
+            int size = moves.getFirst().getX();
+            moves.removeFirst();
+            new GoReplay(comm, moves, size);
         } catch (SQLException e) {
-            throw new RuntimeException("Error while loading games");
+            throw new RuntimeException(e);
         }
     }
 
-    private void filterUser(String s) {
+    private void filterUser() {
+        String s = comm.ask("Podaj nazwę użytkownika: ");
         filter = new Filter.Nickname(s, filter);
-        refresh(s);
+        refresh();
     }
 
 }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class DatabaseHandler {
     public String moveSeparator = "#";
     private final Database db;
+
     public DatabaseHandler(Database db) {
         this.db = db;
     }
@@ -25,18 +26,19 @@ public class DatabaseHandler {
             sb.append(move.toString());
             sb.append(moveSeparator);
         }
-        sb.deleteCharAt(sb.length()-1);
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
     public ArrayList<Move> getMoves(int id) throws SQLException {
-        String query = "SELECT `moves` FROM `games` WHERE `id` = " + id;
+        String query = "SELECT `moves`,`boardSize` FROM `games` WHERE `id` = " + id;
         ResultSet rs = db.get(query);
+        ArrayList<Move> result = new ArrayList<>();
         if (rs.next()) {
-            return convertStringToMoves(rs.getString("moves"));
-        } else {
-            return null;
+            result.add(new Move(null,null,rs.getInt("boardSize"),0));
+            result.addAll(convertStringToMoves(rs.getString("moves")));
         }
+        return result;
     }
 
     public ArrayList<Move> convertStringToMoves(String moves) {
@@ -64,7 +66,6 @@ public class DatabaseHandler {
     public String browseGames(String query) throws SQLException {
         return displayGames(db.get(query));
     }
-
 
 
     private String displayGames(ResultSet rs) throws SQLException {
