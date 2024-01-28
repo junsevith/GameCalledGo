@@ -3,7 +3,9 @@ package org.theGo.players;
 import org.theGo.game.Color;
 import org.theGo.game.GoBoard;
 import org.theGo.game.Move;
-
+/**
+ * Represents a player in the game of Go that is controlled by the computer.
+ */
 public class ComputerPlayer extends GoPlayer {
 
    public ComputerPlayer(Color color) {
@@ -33,6 +35,11 @@ public class ComputerPlayer extends GoPlayer {
 
    @Override
    public void message(String message) {
+
+   }
+
+   @Override
+   public void error(String message) {
 
    }
 }

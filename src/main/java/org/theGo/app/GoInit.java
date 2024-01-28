@@ -7,8 +7,11 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Aplikacja do wyboru trybu gry
+ */
 public class GoInit extends AppMode {
-    Map<String, Function<Communicator, AppMode>> modes = Map.of(
+    private final Map<String, Function<Communicator, AppMode>> modes = Map.of(
             "graj", this::gameApp,
             "g", this::gameApp,
             "game", this::gameApp,
@@ -26,7 +29,7 @@ public class GoInit extends AppMode {
         start();
     }
 
-
+    @Override
     public void start() {
         comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("graj", "wczytaj"), 0).apply(comm).start();
     }

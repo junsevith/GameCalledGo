@@ -4,10 +4,16 @@ import org.theGo.game.Color;
 import org.theGo.game.GoBoard;
 import org.theGo.game.Move;
 
+
 import java.io.*;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
+/**
+ * Class that allows to communicate with the user through the console.
+ */
 public class TermComm extends Communicator {
 
     private final BufferedReader in;
@@ -89,8 +95,17 @@ public class TermComm extends Communicator {
         message("Punkty czarnego: " + blackPoints + "\nPunkty białego: " + whitePoints);
     }
 
+    /**
+     * Set of strings that are recognized as confirmation.
+     */
     private final Set<String> confirmations = Set.of("y", "yes", "tak", "t", "ok", "accept");
+    /**
+     * Set of strings that are recognized as denial.
+     */
     private final Set<String> denials = Set.of("n", "no", "nie", "deny");
+    /**
+     * Set of strings that are recognized as default choice.
+     */
     private final Set<String> defaultSet = Set.of("default", "domyślna", "d", "domyslna", "");
 
     @Override

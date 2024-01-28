@@ -5,6 +5,9 @@ import org.theGo.game.GoBoard;
 import org.theGo.game.Move;
 import org.theGo.communication.Communicator;
 
+/**
+ * Represents a player in the game of Go that is controlled by a human.
+ */
 public class HumanPlayer extends GoPlayer {
     Communicator comm;
 
@@ -59,6 +62,11 @@ public class HumanPlayer extends GoPlayer {
     @Override
     public void message(String message) {
         comm.message(message);
+    }
+
+    @Override
+    public void error(String message) {
+        comm.error(message);
     }
 
     @Override

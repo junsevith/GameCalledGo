@@ -7,12 +7,21 @@ import org.theGo.game.Move;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * Class responsible for browsing games that are in database
+ */
 public class GoLoad extends AppMode {
     private final DatabaseHandler dbHandler;
     private int page = 1;
 
+    /**
+     * Decorator type filter used for displaying games.
+     */
     private Filter filter;
 
+    /**
+     * List of commands that can be used in this mode (for displaying purposes).
+     */
     private final List<String> commands = Arrays.asList(
             "help",
             "prev",
@@ -24,7 +33,10 @@ public class GoLoad extends AppMode {
             "exit"
     );
 
-    Map<String, Runnable> commandSet = new HashMap<>();
+    /**
+     * Map of commands that can be used in this mode (for executing purposes).
+     */
+    private final Map<String, Runnable> commandSet = new HashMap<>();
 
     public GoLoad(Communicator comm) throws SQLException {
         super(comm);
@@ -51,6 +63,9 @@ public class GoLoad extends AppMode {
         clearFilter();
     }
 
+    /**
+     * Flag that indicates if this mode should continue running.
+     */
     private boolean cont = true;
 
     @Override
@@ -105,7 +120,7 @@ public class GoLoad extends AppMode {
     }
 
     private void replayGame() {
-        int id  = comm.set("Podaj id gry: ", Integer::parseInt, null);
+        int id = comm.set("Podaj id gry: ", Integer::parseInt, null);
         try {
             ArrayList<Move> moves = dbHandler.getMoves(id);
             int size = moves.getFirst().getX();

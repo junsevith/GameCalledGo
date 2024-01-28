@@ -13,17 +13,20 @@ import org.theGo.players.GoPlayer;
 import java.sql.SQLException;
 import java.util.Arrays;
 
+/**
+ * Aplikacja do gry w Go.
+ */
 public class GoGame {
 
-    GoBoard board;
-    GoPlayer black;
-    GoPlayer white;
+    private GoBoard board;
+    private final GoPlayer black;
+    private final GoPlayer white;
 
-    GameRecorder recorder = new GameRecorder();
+    private final GameRecorder recorder = new GameRecorder();
 
-    Communicator broadcast;
+    private final Communicator broadcast;
 
-    public GoGame(GoPlayer player1, GoPlayer player2, Communicator broadcast, int BoardSize) {
+    public GoGame(final GoPlayer player1, final GoPlayer player2, final Communicator broadcast, final int boardSize) {
         if (player1.getColor() == Color.WHITE) {
             white = player1;
             black = player2;
@@ -32,20 +35,20 @@ public class GoGame {
             black = player1;
         }
         this.broadcast = broadcast;
-        board = new GoBoard(BoardSize);
+        board = new GoBoard(boardSize);
     }
 
     /**
-     * Rozpoczyna grę
+     * Uruchamia aplikację.
      */
-    public void startGame() {
+    public void start() {
         beginGame();
         countPoints();
     }
 
 
     /**
-     * Rozpoczyna grę
+     * Rozpoczyna grę.
      */
     private void beginGame() {
         broadcast.message("Zaczynamy grę!");
@@ -61,7 +64,7 @@ public class GoGame {
                 move = activePlayer.takeTurn(board);
 
                 if (!move.isType(Move.Type.PASS) && Arrays.deepEquals(board.getState(), recorder.getState(-2))) {
-                    activePlayer.message("Nie można wykonać ruchu ko");
+                    activePlayer.error("Nie można wykonać ruchu ko");
                     board = BoardFactory.recreate(board.getSize(), recorder.getMoves());
                 } else {
                     recorder.recordMove(move);
@@ -84,7 +87,7 @@ public class GoGame {
     }
 
     /**
-     * Sprawdza, czy gra się nie skończyła
+     * Sprawdza, czy gra się nie skończyła.
      *
      * @return true, jeśli gra się nie skończyła, false, jeśli tak
      */
@@ -96,6 +99,9 @@ public class GoGame {
         }
     }
 
+    /**
+     * Zlicza punkty i wyświetla wynik.
+     */
     private void countPoints() {
         int blackPoints = board.getCounter().getWhiteKilled() + board.countTerritory(Color.BLACK);
         int whitePoints = board.getCounter().getBlackKilled() + board.countTerritory(Color.WHITE);
@@ -115,7 +121,12 @@ public class GoGame {
         saveGame(winner);
     }
 
-    private void saveGame(Color winner) {
+    /**
+     * Zapisuje grę do bazy danych.
+     *
+     * @param winner kolor zwycięzcy
+     */
+    private void saveGame(final Color winner) {
         try {
             DatabaseHandler databaseHandler = new DatabaseHandler(Database.getInstance());
 
@@ -139,8 +150,8 @@ public class GoGame {
 
             databaseHandler.saveGame(blackNick, whiteNick, winnerNick, board.getSize(), recorder.getMoves());
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-//            broadcast.message("Problem z nawiązaniem kontaktu z bazą danych, nie udało się zapisać gry");
+//            throw new RuntimeException(e);
+            broadcast.error("Problem z nawiązaniem kontaktu z bazą danych, nie udało się zapisać gry");
         }
     }
 }

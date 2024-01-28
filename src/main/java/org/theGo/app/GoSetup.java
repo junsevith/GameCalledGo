@@ -9,21 +9,35 @@ import org.theGo.players.HumanPlayer;
 import java.util.Arrays;
 import java.util.Map;
 
+/**
+ * Aplikacja przygotowująca grę Go
+ */
 public class GoSetup extends AppMode {
-    GoPlayer player1;
-    GoPlayer player2;
+    private GoPlayer player1;
+    private GoPlayer player2;
 
-    int size = 0;
+    private int size = 0;
 
     public GoSetup(Communicator communicator) {
         super(communicator);
     }
 
+    @Override
+    public void start() {
+        if (comm.confirm("Czy chcesz zagrać w grę przez internet?", false)) {
+            webGame();
+        } else {
+            setPlayers();
+            setSize();
+            startGame();
+        }
+
+    }
 
     /**
-     * Ustawia graczy oraz komputery
+     * Sets players depending on user input.
      */
-    public void start() {
+    private void setPlayers() {
         Map<String, Color> colorMap = Map.of(
                 "b", Color.BLACK,
                 "c", Color.WHITE,
@@ -31,25 +45,19 @@ public class GoSetup extends AppMode {
                 "czarny", Color.BLACK,
                 "black", Color.BLACK,
                 "white", Color.WHITE);
-
         if (comm.confirm("Czy chcesz grać z komputerem?", false)) {
             Color color = comm.choose("Wybierz kolor:", colorMap, Arrays.asList("biały", "czarny"), null);
             player1 = new HumanPlayer(color, comm);
             player2 = new ComputerPlayer(color.opposite());
-            setSize();
-            startGame();
         } else {
-            if (comm.confirm("Czy chcesz zagrać w grę przez internet?", false)) {
-                webGame();
-            } else {
-                player1 = new HumanPlayer(Color.BLACK, comm);
-                player2 = new HumanPlayer(Color.WHITE, comm);
-                setSize();
-                startGame();
-            }
+            player1 = new HumanPlayer(Color.BLACK, comm);
+            player2 = new HumanPlayer(Color.WHITE, comm);
         }
     }
 
+    /**
+     * Sets size of board depending on user input.
+     */
     private void setSize() {
         while (true) {
             size = comm.set("Podaj wielkość planszy: ", Integer::parseInt, 9);
@@ -61,10 +69,16 @@ public class GoSetup extends AppMode {
         comm.accept("Plansza ustawiona");
     }
 
+    /**
+     * Starts an internet game.
+     */
     private void webGame() {
     }
 
+    /**
+     * Starts a local game.
+     */
     private void startGame() {
-        new GoGame(player1, player2, comm, size).startGame();
+        new GoGame(player1, player2, comm, size).start();
     }
 }

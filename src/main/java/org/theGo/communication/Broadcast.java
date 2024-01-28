@@ -9,11 +9,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-public class Broadcast extends Communicator{
+/**
+ * Class that allows to send messages to many communicators at once.
+ */
+public class Broadcast extends Communicator {
 
-    Set<Communicator> communicators;
+    private final Set<Communicator> communicators;
 
-    public Broadcast(Communicator... communicators){
+    public Broadcast(Communicator... communicators) {
         this.communicators = Set.of(communicators);
     }
 
@@ -33,7 +36,6 @@ public class Broadcast extends Communicator{
     }
 
 
-
     @Override
     public <T> T set(String question, Function<String, T> parser, T defaultChoice) {
         throw new UnsupportedOperationException("Can't ask a question to many communicators");
@@ -51,17 +53,17 @@ public class Broadcast extends Communicator{
 
     @Override
     public void accept(String message) {
-
+        communicators.forEach(c -> c.accept(message));
     }
 
     @Override
     public void error(String message) {
-
+        communicators.forEach(c -> c.error(message));
     }
 
     @Override
     public void display(String message) {
-        communicators.forEach(c -> c.display(message)) ;
+        communicators.forEach(c -> c.display(message));
     }
 
     @Override

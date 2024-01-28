@@ -8,13 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class responsible for replaying games got from database
+ */
 public class GoReplay {
     private final Communicator comm;
+    /**
+     * List of moves that are to be replayed
+     */
     private final ArrayList<Move> moves;
+    /**
+     * Flag that indicates if replay is still going
+     */
     private boolean going = true;
+    /**
+     * Index of current move
+     */
     private int currentMove = 0;
-    GoBoard board;
+    /**
+     * Board that is being displayed
+     */
+    private GoBoard board;
 
+    /**
+     * List of commands that can be used in this mode (for displaying purposes).
+     */
     private final List<String> commands = List.of(
             "help",
             "prev",
@@ -22,6 +40,9 @@ public class GoReplay {
             "exit"
     );
 
+    /**
+     * Map of commands that can be used in this mode (for executing purposes).
+     */
     private final Map<String, Runnable> commandSet = Map.of(
             "h", this::help,
             "help", this::help,
@@ -33,6 +54,13 @@ public class GoReplay {
             "exit", this::exit
     );
 
+    /**
+     * Creates new instance of GoReplay
+     *
+     * @param comm  communicator used for displaying and getting input
+     * @param moves list of moves that are to be replayed
+     * @param size  size of board
+     */
     public GoReplay(Communicator comm, ArrayList<Move> moves, int size) {
         this.comm = comm;
         this.moves = moves;
@@ -50,7 +78,7 @@ public class GoReplay {
     private void displayBoard() {
         comm.displayBoard(board);
         comm.message("Ruch: " + currentMove + "/" + moves.size());
-        if (currentMove > 0){
+        if (currentMove > 0) {
             comm.message("Poprzedni ruch: " + moves.get(currentMove - 1).toString());
         }
     }

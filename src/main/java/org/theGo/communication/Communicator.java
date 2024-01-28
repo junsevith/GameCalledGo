@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Abstract class that allows to communicate with the user, through whatever means.
+ * Specific implementations may use console, GUI, web, etc.
+ */
 public abstract class Communicator {
 
 
