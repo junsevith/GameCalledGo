@@ -18,17 +18,7 @@ public class ServComm extends TermComm {
 
     @Override
     public String askRead(String question) {
-        String out = super.askRead(question);
-        if (out.equals("exit")) {
-            System.out.println("Client exited");
-            try {
-                socket.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            throw new RuntimeException("Client exited");
-        }
-        return out;
+        return super.askRead(question);
     }
 
     @Override
@@ -115,7 +105,7 @@ public class ServComm extends TermComm {
         try {
             socket.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Cannot close socket",e);
         }
     }
 

@@ -8,7 +8,7 @@ import java.sql.*;
  */
 public class Database {
     private final Connection connection;
-    private static Database instance;
+    private static volatile Database instance;
     private Database() throws SQLException {
         connection = DriverManager.getConnection("jdbc:mysql://localhost/goGame", "root", "");
     }
@@ -21,7 +21,11 @@ public class Database {
      */
     public static Database getInstance() throws SQLException {
         if (instance == null) {
-            instance = new Database();
+            synchronized (Database.class) {
+                if (instance == null) {
+                    instance = new Database();
+                }
+            }
         }
         return instance;
     }
@@ -33,7 +37,7 @@ public class Database {
      * @return result of query
      * @throws SQLException if connection to database fails
      */
-    public ResultSet get(String query) throws SQLException {
+    public synchronized ResultSet get(String query) throws SQLException {
         if (connection != null && !connection.isClosed()) {
             return connection.createStatement().executeQuery(query);
         } else {
@@ -47,7 +51,7 @@ public class Database {
      * @param query query to execute
      * @throws SQLException if connection to database fails
      */
-    public void insert(String query) throws SQLException {
+    public synchronized void insert(String query) throws SQLException {
         if (connection != null && !connection.isClosed()) {
             connection.createStatement().executeUpdate(query);
         }

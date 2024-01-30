@@ -5,7 +5,7 @@ import org.theGo.communication.TermComm;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-public class GoGameTest {
+public class GoInitTest {
     @Test
     public void killTest() {
         String ring = """
@@ -41,9 +41,10 @@ public class GoGameTest {
                 resign
                 test1
                 test2
+                exit
                 """;
         InputStream in = new ByteArrayInputStream(ring.getBytes());
-        new GoInit(new TermComm(in, System.out, System.err));
+        new GoInit(new TermComm(in, System.out, System.err)).start();
     }
 
     @Test
@@ -70,8 +71,9 @@ public class GoGameTest {
                 resign
                 test1
                 test2
+                exit
                     """;
         InputStream in = new ByteArrayInputStream(ko.getBytes());
-        new GoInit(new TermComm(in, System.out, System.err));
+        new GoInit(new TermComm(in, System.out, System.err)).start();
     }
 }

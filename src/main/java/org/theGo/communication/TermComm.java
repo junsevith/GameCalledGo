@@ -38,6 +38,10 @@ public class TermComm extends Communicator {
             close();
             throw new RuntimeException("Error while reading input, closing connection", e);
         }
+        if (answer.equals("exit")) {
+            close();
+            throw new RuntimeException("Client exited");
+        }
 //        System.out.println("ANSWER:" + answer);
         return answer;
     }
@@ -202,13 +206,7 @@ public class TermComm extends Communicator {
 
     @Override
     public void close() {
-        try {
-            in.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        out.close();
-        err.close();
+
     }
 
     @Override

@@ -14,7 +14,7 @@ public class ComputerPlayer extends GoPlayer {
 
     public ComputerPlayer(Color color) {
         super(color);
-        nickname = "komputer_v0.1";
+        nickname = "komputer_v1";
     }
 
 
