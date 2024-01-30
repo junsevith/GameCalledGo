@@ -74,12 +74,12 @@ public class TermComm extends Communicator {
         while (true) {
             String answer;
             if (defaultChoice != null) {
-                answer = askRead(question + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
+                answer = askRead(question +" (y/n)" + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
                 if (defaultSet.contains(answer.toLowerCase())) {
                     return defaultChoice;
                 }
             } else {
-                answer = askRead(question);
+                answer = askRead(question + " (y/n)");
             }
             if (confirmations.contains(answer.toLowerCase())) {
                 return true;

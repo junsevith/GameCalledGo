@@ -76,4 +76,51 @@ public class GoInitTest {
         InputStream in = new ByteArrayInputStream(ko.getBytes());
         new GoInit(new TermComm(in, System.out, System.err)).start();
     }
+
+    @Test
+    public void databaseTest(){
+        String ko = """
+                load
+                user
+                juno
+                load
+                1
+                n
+                n
+                p
+                p
+                e
+                help
+                clear
+                n
+                p
+                r
+                e
+                    """;
+        InputStream in = new ByteArrayInputStream(ko.getBytes());
+        new GoInit(new TermComm(in, System.out, System.err)).start();
+    }
+
+    @Test
+    public void botTest() {
+        String ko = """
+                
+                
+                t
+                b
+                1
+                5
+                1 1
+                5 5
+                4 4
+                2 2
+                9 9
+                5 5
+                resign
+                tester1
+                exit
+                    """;
+        InputStream in = new ByteArrayInputStream(ko.getBytes());
+        new GoInit(new TermComm(in, System.out, System.err)).start();
+    }
 }
