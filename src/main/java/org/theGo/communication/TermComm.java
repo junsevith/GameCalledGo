@@ -31,12 +31,14 @@ public class TermComm extends Communicator {
 
     public String askRead(String question) {
         write(question);
-        String answer = "";
+        String answer;
         try {
             answer = in.readLine();
         } catch (IOException e) {
             close();
+            throw new RuntimeException("Error while reading input, closing connection", e);
         }
+//        System.out.println("ANSWER:" + answer);
         return answer;
     }
 

@@ -41,6 +41,10 @@ public class GoBoard {
         return counter;
     }
 
+    public GoTile[][] getBoard() {
+        return board;
+    }
+
     /**
      * Sets the neighbors for each tile on the board.
      */
@@ -81,6 +85,10 @@ public class GoBoard {
      */
     public boolean placeStone(int x, int y, Color color) {
         return board[x - 1][y - 1].placeStone(color);
+    }
+
+    public boolean placeStone(Move move) {
+        return board[move.getX() - 1][move.getY() - 1].placeStone(move.getColor());
     }
 
     /**

@@ -82,6 +82,16 @@ public class GoTile {
         return matchingNeighbors;
     }
 
+    public List<GoTile> getNeighborsTiles(Color color) {
+        List<GoTile> matchingNeighbors = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            if (neighbors[i] != null && neighbors[i].getStoneColor() == color) {
+                matchingNeighbors.add(neighbors[i]);
+            }
+        }
+        return matchingNeighbors;
+    }
+
     /**
      * Adds breaths to the stone on the tile.
      *
@@ -276,7 +286,7 @@ public class GoTile {
      * @param tile tile to check
      * @return true if the tile is the only breath of the stone on it
      */
-    private boolean onlyBreath(GoTile tile) {
+    public boolean onlyBreath(GoTile tile) {
         return breathTiles.contains(tile) && breathTiles.size() == 1;
     }
 
