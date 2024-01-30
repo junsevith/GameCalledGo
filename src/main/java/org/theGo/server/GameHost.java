@@ -33,7 +33,8 @@ public class GameHost {
         HumanPlayer player2 = new HumanPlayer(color.opposite(), comm2, name);
         Communicator broadcast = new Broadcast(comm, comm2);
         new GoGame(player1, player2, broadcast, size).start();
-        new GoInit(comm).start();
+        new Thread(new GoInit(comm)).start();
+        new GoInit(comm2).start();
     }
 
     public String toString() {

@@ -91,6 +91,10 @@ public class GoSetup extends AppMode {
             GameLobby.getInstance().addPlayer(new GameHost(roomName, nickname, color, comm, size));
         } else {
             GameHost host = new LobbyBrowser(comm).start();
+            if (host == null) {
+                webGame();
+                return;
+            }
             host.join(nickname, comm);
         }
     }

@@ -19,7 +19,12 @@ public class LobbyBrowser {
         GameHost host = null;
         while (Continue) {
             comm.message("Dostępne pokoje: ");
-            comm.display(lobby.getHosts());
+            String hosts = lobby.getHosts();
+            if (hosts.isEmpty()) {
+                comm.message("Brak dostępnych pokoi");
+                return null;
+            }
+            comm.display(hosts);
             String name = comm.ask("Podaj nazwę pokoju, do którego chcesz dołączyć: ");
             host = lobby.connectToHost(name);
             if (host == null) {
