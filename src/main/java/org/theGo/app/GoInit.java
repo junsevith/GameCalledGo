@@ -10,7 +10,7 @@ import java.util.function.Function;
 /**
  * Aplikacja do wyboru trybu gry
  */
-public class GoInit extends AppMode {
+public class GoInit extends AppMode implements Runnable {
     private final Map<String, Function<Communicator, AppMode>> modes = Map.of(
             "graj", this::gameApp,
             "g", this::gameApp,
@@ -26,12 +26,16 @@ public class GoInit extends AppMode {
 
     public GoInit(Communicator communicator) {
         super(communicator);
-        start();
     }
 
     @Override
     public void start() {
-        comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("graj", "wczytaj"), 0).apply(comm).start();
+        System.out.println("Connected: " + comm);
+        try {
+            comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("graj", "wczytaj"), 0).apply(comm).start();
+        } catch (RuntimeException e) {
+            System.out.println("Connection closed: " + comm);
+        }
     }
 
     private AppMode gameApp(Communicator communicator) {
@@ -47,5 +51,10 @@ public class GoInit extends AppMode {
             mode = this;
         }
         return mode;
+    }
+
+    @Override
+    public void run() {
+        start();
     }
 }

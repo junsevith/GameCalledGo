@@ -5,6 +5,9 @@ import org.theGo.communication.Communicator;
 import org.theGo.players.ComputerPlayer;
 import org.theGo.players.GoPlayer;
 import org.theGo.players.HumanPlayer;
+import org.theGo.server.GameHost;
+import org.theGo.server.GameLobby;
+import org.theGo.server.LobbyBrowser;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -16,7 +19,10 @@ public class GoSetup extends AppMode {
     private GoPlayer player1;
     private GoPlayer player2;
 
+    private String nickname;
+
     private int size = 0;
+    private Color color;
 
     public GoSetup(Communicator communicator) {
         super(communicator);
@@ -27,9 +33,7 @@ public class GoSetup extends AppMode {
         if (comm.confirm("Czy chcesz zagrać w grę przez internet?", false)) {
             webGame();
         } else {
-            setPlayers();
-            setSize();
-            startGame();
+            localGame();
         }
 
     }
@@ -38,15 +42,8 @@ public class GoSetup extends AppMode {
      * Sets players depending on user input.
      */
     private void setPlayers() {
-        Map<String, Color> colorMap = Map.of(
-                "b", Color.BLACK,
-                "c", Color.WHITE,
-                "biały", Color.WHITE,
-                "czarny", Color.BLACK,
-                "black", Color.BLACK,
-                "white", Color.WHITE);
         if (comm.confirm("Czy chcesz grać z komputerem?", false)) {
-            Color color = comm.choose("Wybierz kolor:", colorMap, Arrays.asList("biały", "czarny"), null);
+            setColor();
             player1 = new HumanPlayer(color, comm);
             player2 = new ComputerPlayer(color.opposite());
         } else {
@@ -66,19 +63,46 @@ public class GoSetup extends AppMode {
             }
             comm.error("Rozmiar planszy musi być z przedziału [5, 19]");
         }
-        comm.accept("Plansza ustawiona");
+    }
+
+    private void setColor() {
+        Map<String, Color> colorMap = Map.of(
+                "b", Color.BLACK,
+                "c", Color.WHITE,
+                "biały", Color.WHITE,
+                "czarny", Color.BLACK,
+                "black", Color.BLACK,
+                "white", Color.WHITE);
+        color = comm.choose("Wybierz kolor:", colorMap, Arrays.asList("biały", "czarny"), null);
     }
 
     /**
      * Starts an internet game.
      */
     private void webGame() {
+        if (nickname == null) {
+            nickname = comm.ask("Podaj swój nick: ");
+        }
+        if (comm.confirm("Czy chcesz założyć nowy pokój?", false)) {
+            String roomName = comm.ask("Podaj nazwę pokoju: ");
+            setSize();
+            setColor();
+            comm.message("Oczekiwanie na gracza...");
+            GameLobby.getInstance().addPlayer(new GameHost(roomName, nickname, color, comm, size));
+        } else {
+            GameHost host = new LobbyBrowser(comm).start();
+            host.join(nickname, comm);
+        }
     }
+
 
     /**
      * Starts a local game.
      */
-    private void startGame() {
+    private void localGame() {
+        setPlayers();
+        setSize();
         new GoGame(player1, player2, comm, size).start();
+        start();
     }
 }

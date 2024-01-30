@@ -44,6 +44,7 @@ public class GoGame {
     public void start() {
         beginGame();
         countPoints();
+        broadcast.message("Dziękujemy za grę!");
     }
 
 

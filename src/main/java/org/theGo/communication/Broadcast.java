@@ -52,11 +52,6 @@ public class Broadcast extends Communicator {
     }
 
     @Override
-    public void accept(String message) {
-        communicators.forEach(c -> c.accept(message));
-    }
-
-    @Override
     public void error(String message) {
         communicators.forEach(c -> c.error(message));
     }
@@ -74,5 +69,10 @@ public class Broadcast extends Communicator {
     @Override
     public void displayScore(int blackPoints, int whitePoints) {
         communicators.forEach(c -> c.displayScore(blackPoints, whitePoints));
+    }
+
+    @Override
+    public void close() {
+        communicators.forEach(Communicator::close);
     }
 }

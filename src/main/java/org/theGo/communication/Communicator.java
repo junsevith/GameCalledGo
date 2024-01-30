@@ -67,13 +67,6 @@ public abstract class Communicator {
     public abstract void message(String message);
 
     /**
-     * Inform that the action was successful.
-     *
-     * @param message the message to print
-     */
-    public abstract void accept(String message);
-
-    /**
      * Inform that the action was unsuccessful.
      *
      * @param message the message to print
@@ -101,4 +94,6 @@ public abstract class Communicator {
      * @param whitePoints the number of white points
      */
     public abstract void displayScore(int blackPoints, int whitePoints);
+
+    public abstract void close();
 }

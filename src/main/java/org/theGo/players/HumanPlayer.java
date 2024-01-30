@@ -16,23 +16,31 @@ public class HumanPlayer extends GoPlayer {
         comm = communicator;
     }
 
+    public HumanPlayer(Color color, Communicator communicator, String nickname) {
+        super(color);
+        comm = communicator;
+        this.nickname = nickname;
+    }
+
     @Override
     public Move takeTurn(GoBoard board) {
         while (true) {
-            Move output = comm.takeMove("Podaj współrzędne ruchu:", super.color);
+            Move output = comm.takeMove("Podaj swój ruch:", super.color);
             int x = output.getX();
             int y = output.getY();
 
-            if (x < 1 || x > board.getSize() || y < 1 || y > board.getSize()) {
-                comm.error("Wybrano pole poza wymiarami planszy");
-                continue;
-            }
+            if (output.isType(Move.Type.MOVE)) {
+                if (x < 1 || x > board.getSize() || y < 1 || y > board.getSize()) {
+                    comm.error("Wybrano pole poza wymiarami planszy");
+                    continue;
+                }
 
-            if (!board.placeStone(x, y, super.color)) {
-                comm.error("Wybrano pole poza wymiarami planszy");
-                continue;
-            } else {
-                output = new Move(super.color, Move.Type.MOVE, x, y);
+                if (!board.placeStone(x, y, super.color)) {
+                    comm.error("Nie można postawić kamienia na wybranym polu");
+                    continue;
+                } else {
+                    output = new Move(super.color, Move.Type.MOVE, x, y);
+                }
             }
             return output;
         }
@@ -43,13 +51,13 @@ public class HumanPlayer extends GoPlayer {
     public String getName() {
         String output = "";
         if (nickname != null) {
-            output += nickname + " ";
+            output += nickname;
         }
 
         if (super.color == Color.BLACK) {
-            output += "grający czarnymi";
+            output = "*" + output + "* grający czarnymi";
         } else {
-            output += "grający białymi";
+            output = "*" + output + "* grający białymi";
         }
         return output;
     }

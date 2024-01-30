@@ -4,7 +4,6 @@ import org.theGo.game.Color;
 import org.theGo.game.GoBoard;
 import org.theGo.game.Move;
 
-
 import java.io.*;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +15,9 @@ import java.util.function.Function;
  */
 public class TermComm extends Communicator {
 
-    private final BufferedReader in;
-    private final PrintWriter out;
-    private final PrintStream err;
+    protected final BufferedReader in;
+    protected final PrintWriter out;
+    protected final PrintWriter err;
 
     private final String answerNotRecognized = "Nie rozpoznano odpowiedzi";
     private final String optionString = "wpisz o żeby zobaczyć dostępne opcje";
@@ -27,37 +26,141 @@ public class TermComm extends Communicator {
     public TermComm(InputStream in, OutputStream out, OutputStream err) {
         this.in = new BufferedReader(new InputStreamReader(in));
         this.out = new PrintWriter(out, true);
-        this.err = new PrintStream(err, true);
+        this.err = new PrintWriter(err, true);
+    }
+
+    public String askRead(String question) {
+        write(question);
+        String answer = "";
+        try {
+            answer = in.readLine();
+        } catch (IOException e) {
+            close();
+        }
+        return answer;
+    }
+
+    public void write(String message) {
+        out.println(message);
     }
 
     @Override
     public String ask(String question) {
-        message(question);
-        try {
-            return in.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        return askRead(question);
+    }
+
+
+    /**
+     * Set of strings that are recognized as confirmation.
+     */
+    private final Set<String> confirmations = Set.of("y", "yes", "tak", "t", "ok", "accept");
+    /**
+     * Set of strings that are recognized as denial.
+     */
+    private final Set<String> denials = Set.of("n", "no", "nie", "deny");
+    /**
+     * Set of strings that are recognized as default choice.
+     */
+    private final Set<String> defaultSet = Set.of("default", "domyślna", "d", "domyslna", "");
+
+    @Override
+    public boolean confirm(String question, Boolean defaultChoice) {
+        while (true) {
+            String answer;
+            if (defaultChoice != null) {
+                answer = askRead(question + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
+                if (defaultSet.contains(answer.toLowerCase())) {
+                    return defaultChoice;
+                }
+            } else {
+                answer = askRead(question);
+            }
+            if (confirmations.contains(answer.toLowerCase())) {
+                return true;
+            } else if (denials.contains(answer.toLowerCase())) {
+                return false;
+            } else {
+                error(answerNotRecognized);
+            }
+        }
+    }
+
+    @Override
+    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice) {
+        while (true) {
+            String answer;
+            if (defaultChoice != null) {
+                answer = askRead(question + " (" + defaultString + " " + options.get(defaultChoice) + ", " + optionString + ")");
+                if (defaultSet.contains(answer.toLowerCase())) {
+                    return map.get(options.get(defaultChoice));
+                }
+            } else {
+                answer = askRead(question + " (type o to see options)");
+            }
+
+            if (answer.equals("o")) {
+                out.println("Options:");
+                write(options.toString());
+                continue;
+            }
+
+            T parsed = map.get(answer);
+            if (parsed != null) {
+                return parsed;
+            } else {
+                error("Nie rozpoznano odpowiedzi");
+            }
+        }
+    }
+
+    @Override
+    public <T> T set(String question, Function<String, T> parser, T defaultValue) {
+        while (true) {
+            String answer;
+            if (defaultValue != null) {
+                answer = askRead(question + " (" + defaultString + " " + defaultValue + ")");
+                if (defaultSet.contains(answer.toLowerCase())) {
+                    return defaultValue;
+                }
+            } else {
+                answer = askRead(question);
+            }
+
+            try {
+                return parser.apply(answer);
+            } catch (Exception e) {
+                error(answerNotRecognized);
+            }
+        }
+    }
+
+    @Override
+    public Move takeMove(String question, Color color) {
+        while (true) {
+            try {
+                Move output;
+                String line = askRead(question);
+                String[] args = line.split(" ");
+
+                if (line.strip().equals("pas")) {
+                    output = new Move(color, Move.Type.PASS);
+                } else if (line.strip().equals("resign")) {
+                    output = new Move(color, Move.Type.RESIGN);
+                } else {
+                    int x = Integer.parseInt(args[0]);
+                    int y = Integer.parseInt(args[1]);
+                    output = new Move(color, Move.Type.MOVE, x, y);
+                }
+                return output;
+            } catch (NumberFormatException e) {
+                error(answerNotRecognized);
+            }
         }
     }
 
     @Override
     public void message(String message) {
-        out.println(message);
-    }
-
-    @Override
-    public void accept(String message) {
-        message(message);
-    }
-
-    @Override
-    public void error(String message) {
-        err.println(message);
-    }
-
-    @Override
-    public void display(String message) {
-        message(message);
+        write(message);
     }
 
     @Override
@@ -87,116 +190,34 @@ public class TermComm extends Communicator {
             sb.append("\n");
         }
         sb.deleteCharAt(sb.length() - 1);
-        message(sb.toString());
+        write(sb.toString());
     }
 
     @Override
     public void displayScore(int blackPoints, int whitePoints) {
-        message("Punkty czarnego: " + blackPoints + "\nPunkty białego: " + whitePoints);
+        write("Punkty czarnego: " + blackPoints + "\nPunkty białego: " + whitePoints);
     }
 
-    /**
-     * Set of strings that are recognized as confirmation.
-     */
-    private final Set<String> confirmations = Set.of("y", "yes", "tak", "t", "ok", "accept");
-    /**
-     * Set of strings that are recognized as denial.
-     */
-    private final Set<String> denials = Set.of("n", "no", "nie", "deny");
-    /**
-     * Set of strings that are recognized as default choice.
-     */
-    private final Set<String> defaultSet = Set.of("default", "domyślna", "d", "domyslna", "");
-
     @Override
-    public boolean confirm(String question, Boolean defaultChoice) {
-        String answer;
-        if (defaultChoice != null) {
-            answer = ask(question + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
-            if (defaultSet.contains(answer.toLowerCase())) {
-                return defaultChoice;
-            }
-        } else {
-            answer = ask(question);
-        }
-        if (confirmations.contains(answer.toLowerCase())) {
-            return true;
-        } else if (denials.contains(answer.toLowerCase())) {
-            return false;
-        } else {
-            error(answerNotRecognized);
-            return confirm(question, defaultChoice);
-        }
-    }
-
-
-    @Override
-    public <T> T set(String question, Function<String, T> parser, T defaultValue) {
-        String answer;
-        if (defaultValue != null) {
-            answer = ask(question + " (" + defaultString + " " + defaultValue + ")");
-            if (defaultSet.contains(answer.toLowerCase())) {
-                return defaultValue;
-            }
-        } else {
-            answer = ask(question);
-        }
-
+    public void close() {
         try {
-            return parser.apply(answer);
-        } catch (Exception e) {
-            error(answerNotRecognized);
-            return set(question, parser, defaultValue);
+            in.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        out.close();
+        err.close();
     }
 
     @Override
-    public Move takeMove(String question, Color color) {
-        try {
-            Move output;
-            String line = ask("Podaj współrzędne ruchu:");
-            String[] args = line.split(" ");
-
-            if (line.strip().equals("pas")) {
-                output = new Move(color, Move.Type.PASS);
-            } else if (line.strip().equals("resign")) {
-                output = new Move(color, Move.Type.RESIGN);
-            } else {
-                int x = Integer.parseInt(args[0]);
-                int y = Integer.parseInt(args[1]);
-                output = new Move(color, Move.Type.MOVE, x, y);
-            }
-            return output;
-        } catch (Exception e) {
-            error(answerNotRecognized);
-            return takeMove(question, color);
-        }
+    public void error(String message) {
+        err.println(message);
     }
 
     @Override
-    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice) {
-        String answer;
-        if (defaultChoice != null) {
-            answer = ask(question + " (" + defaultString + " " + options.get(defaultChoice) + ", " + optionString + ")");
-            if (defaultSet.contains(answer.toLowerCase())) {
-                return map.get(options.get(defaultChoice));
-            }
-        } else {
-            answer = ask(question + " (type o to see options)");
-        }
-
-        if (answer.equals("o")) {
-            out.println("Options:");
-            message(options.toString());
-            return choose(question, map, options, defaultChoice);
-        }
-
-        T parsed = map.get(answer);
-        if (parsed == null) {
-            error("Nie rozpoznano odpowiedzi");
-            return choose(question, map, options, defaultChoice);
-        } else {
-            return parsed;
-        }
+    public void display(String message) {
+        write(message);
     }
+
+
 }
