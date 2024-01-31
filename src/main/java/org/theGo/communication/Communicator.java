@@ -19,9 +19,10 @@ public abstract class Communicator {
      * Asks a question and returns the answer. Used for getting a string value.
      *
      * @param question the question to ask
+     * @param reset
      * @return the answer
      */
-    public abstract String ask(String question);
+    public abstract String ask(String question, boolean reset);
 
     /**
      * Asks a yes/no question and returns the answer as a boolean.
@@ -29,9 +30,10 @@ public abstract class Communicator {
      *
      * @param question      the question to ask
      * @param defaultChoice the default choice (null if there is no default choice)
+     * @param reset
      * @return true if the answer is affirmative, false if negative
      */
-    public abstract boolean confirm(String question, Boolean defaultChoice);
+    public abstract boolean confirm(String question, Boolean defaultChoice, boolean reset);
 
     /**
      * Asks to choose from a set of answers and returns the corresponding value from map.
@@ -41,9 +43,10 @@ public abstract class Communicator {
      * @param map           map of possible answers and corresponding values
      * @param options       list of possible answers (for displaying purposes)
      * @param defaultChoice the default choice (null if there is no default choice)
+     * @param reset
      * @return the answer
      */
-    public abstract <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice);
+    public abstract <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice, boolean reset);
 
     /**
      * Asks to set a value and returns parsed value.
@@ -53,9 +56,10 @@ public abstract class Communicator {
      * @param question      the question to ask
      * @param parser        function to parse the answer
      * @param defaultChoice the default choice (null if there is no default choice)
+     * @param reset
      * @return value parsed from the answer
      */
-    public abstract <T> T set(String question, Function<String, T> parser, T defaultChoice);
+    public abstract <T> T set(String question, Function<String, T> parser, T defaultChoice, boolean reset);
 
     public abstract Move takeMove(String question, Color color);
 

@@ -71,7 +71,7 @@ public class GoLoad extends AppMode {
     @Override
     public void start() {
         while (cont) {
-            comm.choose("Podaj komendę: (h - pomoc)", commandSet, commands, 0).run();
+            comm.choose("Podaj komendę: (h - pomoc)", commandSet, commands, 0, false).run();
         }
     }
 
@@ -120,7 +120,7 @@ public class GoLoad extends AppMode {
     }
 
     private void replayGame() {
-        int id = comm.set("Podaj id gry: ", Integer::parseInt, null);
+        int id = comm.set("Podaj id gry: ", Integer::parseInt, null, false);
         try {
             ArrayList<Move> moves = dbHandler.getMoves(id);
             int size = moves.getFirst().getX();
@@ -132,7 +132,7 @@ public class GoLoad extends AppMode {
     }
 
     private void filterUser() {
-        String s = comm.ask("Podaj nazwę użytkownika: ");
+        String s = comm.ask("Podaj nazwę użytkownika: ", false);
         filter = new Filter.Nickname(s, filter);
         refresh();
     }

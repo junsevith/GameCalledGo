@@ -23,7 +23,7 @@ public class TermCommTest {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         ByteArrayInputStream inContent = new ByteArrayInputStream("answer".getBytes());
         Communicator comm = new TermComm(inContent, outContent, System.err);
-        assert comm.ask("question").equals("answer");
+        assert comm.ask("question", ).equals("answer");
         assert outContent.toString().strip().equals("question");
     }
 
@@ -32,7 +32,7 @@ public class TermCommTest {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         ByteArrayInputStream inContent = new ByteArrayInputStream("y".getBytes());
         Communicator comm = new TermComm(inContent, outContent, System.err);
-        assert comm.confirm("question",null);
+        assert comm.confirm("question",null, );
         assert outContent.toString().strip().equals("question (y/n)");
     }
 
@@ -41,7 +41,7 @@ public class TermCommTest {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         ByteArrayInputStream inContent = new ByteArrayInputStream("12".getBytes());
         Communicator comm = new TermComm(inContent, outContent, System.err);
-        assert comm.set("question",Integer::parseInt,null).equals(12);
+        assert comm.set("question",Integer::parseInt,null, ).equals(12);
         assert outContent.toString().strip().equals("question");
     }
 
@@ -53,7 +53,7 @@ public class TermCommTest {
         Integer option = comm.choose("question", Map.of(
                 "option1", 1,
                 "option2", 2
-        ), List.of("option1","option2"),null);
+        ), List.of("option1","option2"),null, );
         assert option == 1;
         assert outContent.toString().strip().equals("question (type o to see options)");
     }

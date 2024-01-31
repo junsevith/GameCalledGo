@@ -30,7 +30,7 @@ public class GoSetup extends AppMode {
 
     @Override
     public void start() {
-        if (comm.confirm("Czy chcesz zagrać w grę przez internet?", false)) {
+        if (comm.confirm("Czy chcesz zagrać w grę przez internet?", false, true)) {
             webGame();
         } else {
             localGame();
@@ -42,7 +42,7 @@ public class GoSetup extends AppMode {
      * Sets players depending on user input.
      */
     private void setPlayers() {
-        if (comm.confirm("Czy chcesz grać z komputerem?", false)) {
+        if (comm.confirm("Czy chcesz grać z komputerem?", false, true)) {
             setColor();
             player1 = new HumanPlayer(color, comm);
             player2 = new ComputerPlayer(color.opposite());
@@ -57,7 +57,7 @@ public class GoSetup extends AppMode {
      */
     private void setSize() {
         while (true) {
-            size = comm.set("Podaj wielkość planszy: ", Integer::parseInt, 9);
+            size = comm.set("Podaj wielkość planszy: ", Integer::parseInt, 9, true);
             if (5 <= size && size <= 19) {
                 break;
             }
@@ -73,7 +73,7 @@ public class GoSetup extends AppMode {
                 "czarny", Color.BLACK,
                 "black", Color.BLACK,
                 "white", Color.WHITE);
-        color = comm.choose("Wybierz kolor:", colorMap, Arrays.asList("biały", "czarny"), null);
+        color = comm.choose("Wybierz kolor:", colorMap, Arrays.asList("biały", "czarny"), null, true );
     }
 
     /**
@@ -81,10 +81,10 @@ public class GoSetup extends AppMode {
      */
     private void webGame() {
         if (nickname == null) {
-            nickname = comm.ask("Podaj swój nick: ");
+            nickname = comm.ask("Podaj swój nick: ", true );
         }
-        if (comm.confirm("Czy chcesz założyć nowy pokój?", false)) {
-            String roomName = comm.ask("Podaj nazwę pokoju: ");
+        if (comm.confirm("Czy chcesz założyć nowy pokój?", false, true )) {
+            String roomName = comm.ask("Podaj nazwę pokoju: ", true);
             setSize();
             setColor();
             comm.message("Oczekiwanie na gracza...");

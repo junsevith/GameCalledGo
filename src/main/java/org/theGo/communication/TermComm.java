@@ -51,7 +51,7 @@ public class TermComm extends Communicator {
     }
 
     @Override
-    public String ask(String question) {
+    public String ask(String question, boolean reset) {
         return askRead(question);
     }
 
@@ -70,11 +70,12 @@ public class TermComm extends Communicator {
     private final Set<String> defaultSet = Set.of("default", "domyślna", "d", "domyslna", "");
 
     @Override
-    public boolean confirm(String question, Boolean defaultChoice) {
+    public boolean confirm(String question, Boolean defaultChoice, boolean reset) {
         while (true) {
             String answer;
             if (defaultChoice != null) {
-                answer = askRead(question +" (y/n)" + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
+//                answer = askRead(question +" (y/n)" + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
+                answer = askRead(question);
                 if (defaultSet.contains(answer.toLowerCase())) {
                     return defaultChoice;
                 }
@@ -92,7 +93,7 @@ public class TermComm extends Communicator {
     }
 
     @Override
-    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice) {
+    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice, boolean reset) {
         while (true) {
             String answer;
             if (defaultChoice != null) {
@@ -122,7 +123,7 @@ public class TermComm extends Communicator {
     }
 
     @Override
-    public <T> T set(String question, Function<String, T> parser, T defaultValue) {
+    public <T> T set(String question, Function<String, T> parser, T defaultValue, boolean reset) {
         while (true) {
             String answer;
             if (defaultValue != null) {

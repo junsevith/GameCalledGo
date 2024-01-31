@@ -71,7 +71,7 @@ public class GoReplay {
     public void start() {
         displayBoard();
         while (going) {
-            comm.choose("Podaj komendę: (h - pomoc)", commandSet, commands, 0).run();
+            comm.choose("Podaj komendę: (h - pomoc)", commandSet, commands, 0, false).run();
         }
     }
 

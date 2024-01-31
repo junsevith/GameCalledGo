@@ -6,7 +6,9 @@ import org.theGo.game.Move;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class ServComm extends TermComm {
 
@@ -27,28 +29,29 @@ public class ServComm extends TermComm {
     }
 
     @Override
-    public String ask(String question) {
-        return super.askRead("ASK_" + question);
+    public String ask(String question, boolean reset) {
+        return super.askRead("ASK_" + question+ "_" + reset);
     }
 
     @Override
-    public boolean confirm(String question, Boolean defaultChoice) {
-        return super.confirm("CNF_" + question, defaultChoice);
+    public boolean confirm(String question, Boolean defaultChoice, boolean reset) {
+        return super.confirm("CNF_" + question+ "_" + reset, defaultChoice, reset);
     }
 
     @Override
-    public <T> T choose(String question, Map<String, T> map, java.util.List<String> options, Integer defaultChoice) {
+    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice, boolean reset) {
         StringBuilder sb = new StringBuilder();
         sb.append("CHS_").append(question).append("%");
         for (String s : options) {
             sb.append(s).append("%");
         }
-        return super.choose(sb.toString(), map, options, defaultChoice);
+        sb.append("_").append(reset);
+        return super.choose(sb.toString(), map, options, defaultChoice, reset);
     }
 
     @Override
-    public <T> T set(String question, java.util.function.Function<String, T> parser, T defaultChoice) {
-        return super.set("SET_" + question, parser, defaultChoice);
+    public <T> T set(String question, Function<String, T> parser, T defaultChoice, boolean reset) {
+        return super.set("SET_" + question + "_" + reset, parser, defaultChoice, reset);
     }
 
     @Override

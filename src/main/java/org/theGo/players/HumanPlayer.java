@@ -64,7 +64,7 @@ public class HumanPlayer extends GoPlayer {
 
     @Override
     public boolean askFinish() {
-        return comm.confirm("Czy chcesz zakończyć grę?", false);
+        return comm.confirm("Czy chcesz zakończyć grę?", false, false );
     }
 
     @Override
@@ -80,7 +80,7 @@ public class HumanPlayer extends GoPlayer {
     @Override
     public String getNickname() {
         if (nickname == null) {
-            nickname = comm.ask(getName() + ", wpisz swój nick (pozwoli on ci na znalezienie zapisu gry w bazie danych):");
+            nickname = comm.ask(getName() + ", wpisz swój nick (pozwoli on ci na znalezienie zapisu gry w bazie danych):", true );
         }
         return nickname;
     }

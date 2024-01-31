@@ -25,7 +25,7 @@ public class LobbyBrowser {
                 return null;
             }
             comm.display(hosts);
-            String name = comm.ask("Podaj nazwę pokoju, do którego chcesz dołączyć: ");
+            String name = comm.ask("Podaj nazwę pokoju, do którego chcesz dołączyć: ", false);
             host = lobby.connectToHost(name);
             if (host == null) {
                 comm.error("Nie ma takiego pokoju");

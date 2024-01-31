@@ -56,8 +56,8 @@ public class GoGame {
         GoPlayer activePlayer = black;
 
         while (gameIsNotOver()) {
-            broadcast.displayBoard(board);
             broadcast.displayScore(board.getCounter().getBlackKilled(), board.getCounter().getWhiteKilled());
+            broadcast.displayBoard(board);
             broadcast.message("Teraz ruch wykonuje " + activePlayer.getName());
 
             Move move;

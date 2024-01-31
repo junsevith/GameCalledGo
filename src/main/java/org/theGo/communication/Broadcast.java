@@ -21,23 +21,23 @@ public class Broadcast extends Communicator {
     }
 
     @Override
-    public String ask(String question) {
+    public String ask(String question, boolean reset) {
         throw new UnsupportedOperationException("Can't ask a question to many communicators");
     }
 
     @Override
-    public boolean confirm(String question, Boolean defaultChoice) {
+    public boolean confirm(String question, Boolean defaultChoice, boolean reset) {
         throw new UnsupportedOperationException("Can't ask a question to many communicators");
     }
 
     @Override
-    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice) {
+    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice, boolean reset) {
         throw new UnsupportedOperationException("Can't ask a question to many communicators");
     }
 
 
     @Override
-    public <T> T set(String question, Function<String, T> parser, T defaultChoice) {
+    public <T> T set(String question, Function<String, T> parser, T defaultChoice, boolean reset) {
         throw new UnsupportedOperationException("Can't ask a question to many communicators");
     }
 
