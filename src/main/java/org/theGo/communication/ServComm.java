@@ -6,6 +6,7 @@ import org.theGo.game.Move;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -13,6 +14,7 @@ import java.util.function.Function;
 public class ServComm extends TermComm {
 
     Socket socket;
+
     public ServComm(Socket socket) throws IOException {
         super(socket.getInputStream(), socket.getOutputStream(), socket.getOutputStream());
         this.socket = socket;
@@ -20,33 +22,36 @@ public class ServComm extends TermComm {
 
     @Override
     public String askRead(String question) {
-        return super.askRead(question);
+        return super.askRead(question.replace('\n', '|').replaceAll("\\(.*?\\)", ""));
     }
 
     @Override
     public void write(String message) {
-        super.write(message.replace('\n', '|'));
+        super.write(message.replace('\n', '|').replaceAll("\\(.*?\\)", ""));
     }
 
     @Override
     public String ask(String question, boolean reset) {
-        return super.askRead("ASK_" + question+ "_" + reset);
+        return super.askRead("ASK_" + question + "_" + reset);
     }
 
     @Override
     public boolean confirm(String question, Boolean defaultChoice, boolean reset) {
-        return super.confirm("CNF_" + question+ "_" + reset, defaultChoice, reset);
+        return super.confirm("CNF_" + question + "_" + reset, defaultChoice, reset);
     }
 
     @Override
-    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice, boolean reset) {
+    public <T> T choose(String question, Map<String, T> map, List<String> options, Integer defaultChoice, boolean reset)
+    {
+        List<String> options2 = new ArrayList<>(options);
+        options2.remove("help");
         StringBuilder sb = new StringBuilder();
         sb.append("CHS_").append(question).append("%");
-        for (String s : options) {
+        for (String s : options2) {
             sb.append(s).append("%");
         }
         sb.append("_").append(reset);
-        return super.choose(sb.toString(), map, options, defaultChoice, reset);
+        return super.choose(sb.toString(), map, options2, defaultChoice, reset);
     }
 
     @Override
@@ -108,7 +113,7 @@ public class ServComm extends TermComm {
         try {
             socket.close();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot close socket",e);
+            throw new RuntimeException("Cannot close socket", e);
         }
     }
 

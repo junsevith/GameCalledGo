@@ -32,11 +32,13 @@ public class GoInit extends AppMode implements Runnable {
     public void start() {
         System.out.println("Connected: " + comm);
         try {
-            comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("Graj", "Wczytaj"), 0, true ).apply(comm).start();
+            while (true){
+                comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("Graj", "Wczytaj"), 0, true ).apply(comm).start();
+            }
         } catch (RuntimeException e) {
             System.out.println("Connection closed: " + comm);
             System.out.println(e.getMessage());
-//            System.out.println(e.getCause());
+            System.out.println(e.getCause());
         }
     }
 

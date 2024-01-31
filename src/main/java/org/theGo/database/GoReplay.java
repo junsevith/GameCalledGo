@@ -37,7 +37,7 @@ public class GoReplay {
             "help",
             "prev",
             "next",
-            "exit"
+            "quit"
     );
 
     /**
@@ -50,8 +50,8 @@ public class GoReplay {
             "prev", this::prevMove,
             "n", this::nextMove,
             "next", this::nextMove,
-            "e", this::exit,
-            "exit", this::exit
+            "q", this::exit,
+            "quit", this::exit
     );
 
     /**
@@ -76,11 +76,12 @@ public class GoReplay {
     }
 
     private void displayBoard() {
-        comm.displayBoard(board);
-        comm.message("Ruch: " + currentMove + "/" + moves.size());
+        String msg = "Ruch: " + currentMove + "/" + moves.size() + " ";
         if (currentMove > 0) {
-            comm.message("Poprzedni ruch: " + moves.get(currentMove - 1).toString());
+            msg += " " + moves.get(currentMove - 1).toString();
         }
+        comm.message(msg);
+        comm.displayBoard(board);
     }
 
     private void help() {
@@ -88,7 +89,7 @@ public class GoReplay {
                 h, help - wyświetla pomoc
                 p, prev - cofa się o jeden ruch
                 n, next - idzie do przodu o jeden ruch
-                e, exit - wyjście z trybu replay
+                1, quit - wyjście z trybu replay
                 """);
     }
 
@@ -96,9 +97,8 @@ public class GoReplay {
         if (currentMove > 0) {
             currentMove--;
             board = BoardFactory.recreate(board.getSize(), moves.subList(0, currentMove));
-            displayBoard();
         }
-
+        displayBoard();
     }
 
     private void nextMove() {
@@ -110,6 +110,7 @@ public class GoReplay {
             currentMove++;
             displayBoard();
         } else {
+            displayBoard();
             comm.message("Koniec gry");
         }
 

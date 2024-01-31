@@ -30,7 +30,7 @@ public class GoLoad extends AppMode {
             "refresh",
             "user",
             "clear",
-            "exit"
+            "quit"
     );
 
     /**
@@ -55,8 +55,8 @@ public class GoLoad extends AppMode {
         commandSet.put("user", this::filterUser);
         commandSet.put("c", this::clearFilter);
         commandSet.put("clear", this::clearFilter);
-        commandSet.put("e", this::exit);
-        commandSet.put("exit", this::exit);
+        commandSet.put("q", this::exit);
+        commandSet.put("quit", this::exit);
 
 
         dbHandler = new DatabaseHandler(Database.getInstance());
@@ -84,7 +84,7 @@ public class GoLoad extends AppMode {
                 r,refresh - odśwież wyniki
                 u,user - filtruj po użytkowniku
                 c,clear - wyczyść filtr
-                e,exit - wyjdź z przeglądania gier
+                q,quit - wyjdź z przeglądania gier
                 """);
     }
 
@@ -96,11 +96,14 @@ public class GoLoad extends AppMode {
 //        comm.message(filter.getQuery(page));
         String result;
         try {
-            result = dbHandler.browseGames(filter.getQuery(page));
+            String query = filter.getQuery(page);
+//            System.out.println(query);
+            result = dbHandler.browseGames(query);
         } catch (SQLException e) {
 //            throw new RuntimeException(e);
             result = "Błąd podczas wczytywania gier";
         }
+        result = result.replace('_', ' ').replace('#', 'H');
         comm.display(result);
     }
 
@@ -110,7 +113,9 @@ public class GoLoad extends AppMode {
     }
 
     private void prevPage() {
-        page--;
+        if (page > 1) {
+            page--;
+        }
         refresh();
     }
 

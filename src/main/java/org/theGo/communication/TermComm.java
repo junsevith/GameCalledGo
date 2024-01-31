@@ -74,8 +74,8 @@ public class TermComm extends Communicator {
         while (true) {
             String answer;
             if (defaultChoice != null) {
-//                answer = askRead(question +" (y/n)" + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
-                answer = askRead(question);
+                answer = askRead(question +" (y/n)" + " (" + defaultString + " " + (defaultChoice ? "yes" : "no") + ")");
+//                answer = askRead(question);
                 if (defaultSet.contains(answer.toLowerCase())) {
                     return defaultChoice;
                 }
@@ -97,14 +97,14 @@ public class TermComm extends Communicator {
         while (true) {
             String answer;
             if (defaultChoice != null) {
-//                answer = askRead(question + " (" + defaultString + " " + options.get(defaultChoice) + ", " + optionString + ")");
-                answer = askRead(question);
+                answer = askRead(question + " (" + defaultString + " " + options.get(defaultChoice) + ", " + optionString + ")");
+//                answer = askRead(question);
                 if (defaultSet.contains(answer.toLowerCase())) {
                     return map.get(options.get(defaultChoice));
                 }
             } else {
-//                answer = askRead(question + " (type o to see options)");
-                answer = askRead(question);
+                answer = askRead(question + " (type o to see options)");
+//                answer = askRead(question);
             }
 
             if (answer.equals("o")) {
@@ -127,8 +127,8 @@ public class TermComm extends Communicator {
         while (true) {
             String answer;
             if (defaultValue != null) {
-//                answer = askRead(question + " (" + defaultString + " " + defaultValue + ")");
-                answer = askRead(question);
+                answer = askRead(question + " (" + defaultString + " " + defaultValue + ")");
+//                answer = askRead(question);
                 if (defaultSet.contains(answer.toLowerCase())) {
                     return defaultValue;
                 }
