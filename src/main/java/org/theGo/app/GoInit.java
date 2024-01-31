@@ -35,6 +35,7 @@ public class GoInit extends AppMode implements Runnable {
         try {
             do {
                 comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("Graj", "Wczytaj"), 0, true ).apply(comm).start();
+
             } while (!GameLobby.getInstance().isWaiting(comm));
         } catch (RuntimeException e) {
             System.out.println("Connection closed: " + comm);

@@ -132,6 +132,17 @@ public class GoGame {
         try {
             DatabaseHandler databaseHandler = new DatabaseHandler(Database.getInstance());
 
+            if (winner == Color.BLACK) {
+                broadcast.display("Wygrał czarny!");
+            } else if (winner == Color.WHITE) {
+                broadcast.display("Wygrał biały!");
+            } else {
+                broadcast.display("Remis");
+            }
+            synchronized (Thread.currentThread()) {
+                Thread.currentThread().wait(3000);
+            }
+
             String blackNick = black.getNickname();
             if (blackNick.isEmpty()) {
                 blackNick = "player1";
@@ -150,10 +161,13 @@ public class GoGame {
                 winnerNick = "remis";
             }
 
+
             databaseHandler.saveGame(blackNick, whiteNick, winnerNick, board.getSize(), recorder.getMoves());
         } catch (SQLException e) {
 //            throw new RuntimeException(e);
             broadcast.error("Problem z nawiązaniem kontaktu z bazą danych, nie udało się zapisać gry");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }

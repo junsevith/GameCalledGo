@@ -5,6 +5,8 @@ import org.theGo.game.GoBoard;
 import org.theGo.game.Move;
 import org.theGo.communication.Communicator;
 
+import java.util.Objects;
+
 /**
  * Represents a player in the game of Go that is controlled by a human.
  */
@@ -14,6 +16,7 @@ public class HumanPlayer extends GoPlayer {
     public HumanPlayer(Color color, Communicator communicator) {
         super(color);
         comm = communicator;
+        nickname = "gracz";
     }
 
     public HumanPlayer(Color color, Communicator communicator, String nickname) {
@@ -49,10 +52,7 @@ public class HumanPlayer extends GoPlayer {
 
     @Override
     public String getName() {
-        String output = "";
-        if (nickname != null) {
-            output += nickname;
-        }
+        String output = nickname;
 
         if (super.color == Color.BLACK) {
             output = "*" + output + "* grający czarnymi";
@@ -64,7 +64,7 @@ public class HumanPlayer extends GoPlayer {
 
     @Override
     public boolean askFinish() {
-        return comm.confirm("Czy chcesz zakończyć grę?", false, false );
+        return comm.confirm("Gracz: "+ color + ", czy chcesz zakończyć grę?", false, true );
     }
 
     @Override
@@ -79,7 +79,7 @@ public class HumanPlayer extends GoPlayer {
 
     @Override
     public String getNickname() {
-        if (nickname == null) {
+        if (Objects.equals(nickname, "gracz")) {
             nickname = comm.ask(getName() + ", wpisz swój nick (pozwoli on ci na znalezienie zapisu gry w bazie danych):", true );
         }
         return nickname;
