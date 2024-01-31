@@ -20,13 +20,6 @@ public class ComputerPlayer extends GoPlayer {
 
     @Override
     public Move takeTurn(GoBoard board) {
-        synchronized (Thread.currentThread()){
-            try {
-                Thread.currentThread().wait(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         ArrayList<Set<Move>> sets = new ArrayList<>(Arrays.asList(
                 new HashSet<>(),
                 new HashSet<>(),
