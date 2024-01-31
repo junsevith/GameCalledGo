@@ -112,7 +112,7 @@ public class TermComm extends Communicator {
                 continue;
             }
 
-            T parsed = map.get(answer);
+            T parsed = map.get(answer.toLowerCase());
             if (parsed != null) {
                 return parsed;
             } else {
