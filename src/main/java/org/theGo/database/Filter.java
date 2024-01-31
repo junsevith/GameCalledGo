@@ -14,7 +14,7 @@ public abstract class Filter {
      * @return query for getting games from database
      */
     public String getQuery(int page) {
-        return "SELECT * FROM `games` WHERE 1=1" + modifier() + " ORDER BY `date` DESC LIMIT " + (page - 1) * 10 + " ,10";
+        return "SELECT * FROM `games` WHERE 1=1" + modifier() + " ORDER BY `date` DESC LIMIT " + (page - 1) * 10 + ", 10";
     }
 
     /**

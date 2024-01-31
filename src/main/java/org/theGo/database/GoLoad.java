@@ -71,6 +71,7 @@ public class GoLoad extends AppMode {
     @Override
     public void start() {
         while (cont) {
+            refresh();
             comm.choose("Podaj komendę: (h - pomoc)", commandSet, commands, 0, false).run();
         }
     }
@@ -109,19 +110,16 @@ public class GoLoad extends AppMode {
 
     private void nextPage() {
         page++;
-        refresh();
     }
 
     private void prevPage() {
         if (page > 1) {
             page--;
         }
-        refresh();
     }
 
     private void clearFilter() {
         filter = new Filter.Clear();
-        refresh();
     }
 
     private void replayGame() {
@@ -139,7 +137,6 @@ public class GoLoad extends AppMode {
     private void filterUser() {
         String s = comm.ask("Podaj nazwę użytkownika: ", false);
         filter = new Filter.Nickname(s, filter);
-        refresh();
     }
 
 }

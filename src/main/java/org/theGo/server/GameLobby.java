@@ -1,5 +1,7 @@
 package org.theGo.server;
 
+import org.theGo.communication.Communicator;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,5 +41,14 @@ public class GameLobby {
         GameHost host = lobby.get(name);
         lobby.remove(name);
         return host;
+    }
+
+    public synchronized boolean isWaiting(Communicator comm) {
+        for (GameHost host : lobby.values()) {
+            if (host.checkComm(comm)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

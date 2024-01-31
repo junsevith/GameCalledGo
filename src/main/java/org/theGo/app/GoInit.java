@@ -2,6 +2,7 @@ package org.theGo.app;
 
 import org.theGo.communication.Communicator;
 import org.theGo.database.GoLoad;
+import org.theGo.server.GameLobby;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -32,7 +33,9 @@ public class GoInit extends AppMode implements Runnable {
     public void start() {
         System.out.println("Connected: " + comm);
         try {
-            comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("Graj", "Wczytaj"), 0, true ).apply(comm).start();
+            do {
+                comm.choose("Chcesz grać czy wczytać grę?", modes, Arrays.asList("Graj", "Wczytaj"), 0, true ).apply(comm).start();
+            } while (!GameLobby.getInstance().isWaiting(comm));
         } catch (RuntimeException e) {
             System.out.println("Connection closed: " + comm);
             System.out.println(e.getMessage());

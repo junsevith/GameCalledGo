@@ -40,4 +40,8 @@ public class GameHost {
     public String toString() {
         return roomName + " " + nickname + " " + color + " " + size;
     }
+
+    public boolean checkComm(Communicator comm2) {
+        return comm.equals(comm2);
+    }
 }
