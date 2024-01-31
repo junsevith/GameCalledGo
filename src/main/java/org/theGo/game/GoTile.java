@@ -162,7 +162,7 @@ public class GoTile {
 
         //oddaje oddech sąsiadom przeciwnego koloru
         for (Integer dir : getNeighbors(stoneColor.opposite())) {
-            neighbors[dir].addBreath(this);
+            neighbors[dir].addBreathPropagate(new HashSet<>(Set.of(this)), new HashSet<>(Set.of(this)));
         }
 
         resetTile();
