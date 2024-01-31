@@ -29,6 +29,14 @@ public class ComputerPlayer extends GoPlayer {
                 new HashSet<>()
         ));
 
+        synchronized (Thread.currentThread()) {
+            try {
+                Thread.currentThread().wait(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         GoTile[][] tiles = board.getBoard();
         for (int i = 0; i < board.getSize(); i++) {
             for (int j = 0; j < board.getSize(); j++) {
