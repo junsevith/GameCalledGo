@@ -87,7 +87,7 @@ public class GoSetup extends AppMode {
             String roomName = comm.ask("Podaj nazwę pokoju: ", true);
             setSize();
             setColor();
-            comm.message("Oczekiwanie na gracza...");
+            comm.display("Oczekiwanie na gracza...");
             GameLobby.getInstance().addPlayer(new GameHost(roomName, nickname, color, comm, size));
         } else {
             GameHost host = new LobbyBrowser(comm).start();
